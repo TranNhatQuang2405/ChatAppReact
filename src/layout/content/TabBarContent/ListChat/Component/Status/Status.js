@@ -87,4 +87,4 @@ function Status() {
     );
 }
 
-export default Status;
+export default React.memo(Status);

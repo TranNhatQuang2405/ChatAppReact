@@ -7,7 +7,6 @@ import { db } from "configs/firebase/config";
 const useListGroup = (key, uid) => {
     const dispatch = useDispatch();
 
-    console.log("Ree group");
     React.useEffect(() => {
         let dbRef = query(
             ref(db, `users/${key}/listMessage`),
@@ -18,14 +17,19 @@ const useListGroup = (key, uid) => {
             dbRef,
             (snapshot) => {
                 console.log(snapshot.exists());
-                if (snapshot.exists()) {
-                    dispatch(GetAll(uid));
-                }
+                dispatch(GetAll(uid));
+                // console.log("List Grou: ", snapshot.val());
+                // if (snapshot.exists()) {
+                //     dispatch(GetAll(uid));
+                // } else {
+                //     console.log("empty");
+                // }
             },
             {
                 onlyOnce: false,
             }
         );
+
         return unsubscribe;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key]);

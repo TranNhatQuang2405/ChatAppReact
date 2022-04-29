@@ -26,7 +26,6 @@ function ListContact() {
     const [searchInvite, setSearchInvite] = useState("");
     const [listToInvite, setListToInvite] = useState([]);
     const [listFriendInfo, setListFriendInfo] = useState(listFriend);
-
     const sortName = (a, b) => {
         if (a.val.displayName < b.val.displayName) {
             return -1;

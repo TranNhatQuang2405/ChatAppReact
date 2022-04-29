@@ -6,10 +6,10 @@ import useRequest from "configs/customHook/useRequest";
 function AppProvider({ children }) {
     const currentUser = useSelector((state) => state.UserInfo.user);
     console.log("Re");
-    useListFriend(
-        currentUser && currentUser.key,
-        currentUser && currentUser.uid
-    );
+    // useListFriend(
+    //     currentUser && currentUser.key,
+    //     currentUser && currentUser.uid
+    // );
     useListGroup(
         currentUser && currentUser.key,
         currentUser && currentUser.uid

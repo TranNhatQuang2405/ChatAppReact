@@ -13,9 +13,7 @@ const useRequest = (key, uid) => {
             dbRef,
             (snapshot) => {
                 console.log(snapshot.exists());
-                if (snapshot.exists()) {
-                    dispatch(GetAll(uid));
-                }
+                dispatch(GetAll(uid));
             },
             {
                 onlyOnce: false,
