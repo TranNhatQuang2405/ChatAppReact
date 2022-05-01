@@ -14,7 +14,7 @@ function TabBarContent() {
                 backgroundColor: "var(--bs-sidebar-sub-bg)",
             }}
         >
-            <Tab.Content>
+            <Tab.Content className="position-relative">
                 <Tab.Pane eventKey="profile">Profile</Tab.Pane>
                 <Tab.Pane eventKey="chats">
                     <ListChat />
