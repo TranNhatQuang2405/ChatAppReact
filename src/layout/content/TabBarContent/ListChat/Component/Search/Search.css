@@ -1,14 +1,4 @@
-.bg-light {
-    --bs-bg-opacity: 1;
-    background-color: rgba(
-        var(--bs-light-rgb),
-        var(--bs-bg-opacity)
-    ) !important;
-}
-.text-muted-bg {
-    --bs-text-opacity: 1;
-    color: var(--bs-text-muted) !important;
-}
+
 
 .seach__text-color {
     font-weight: 400;

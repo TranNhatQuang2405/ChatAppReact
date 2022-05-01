@@ -1,7 +1,7 @@
 import React from "react";
 import { FormControl } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import "./seach.css";
+import "./Search.css";
 function Search() {
     return (
         <div className="pt-4 px-3">

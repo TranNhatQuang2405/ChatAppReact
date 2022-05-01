@@ -1,5 +1,7 @@
 import React from "react";
 import { Image } from "react-bootstrap";
+import "./Avatar.css";
+
 function Avatar(props) {
   const { width, status } = props;
   return (
@@ -15,15 +17,11 @@ function Avatar(props) {
       {status != null ? (
         <span
           style={{
-            backgroundColor: `${status ? "#06d6a0" : "#ffd166"}`,
-            width: "15px",
-            height: "15px",
-            borderRadius: "50%",
-            position: "absolute",
-            right: 3,
-            bottom: 0,
-            border: "2px solid var(--bs-card-bg)",
+            left: `calc(${width}-10px)`,
           }}
+          className={`${
+            status ? "avatar_span_isActive" : "avatar_span"
+          } mx-auto`}
         ></span>
       ) : null}
     </div>
