@@ -1,4 +1,4 @@
-:root {
+[data-layout-mode="ligth"] {
   --bs-sidebar-bg: #ffffff;
   --bs-sidebar-menu-item-color: #878a92;
   --bs-sidebar-menu-item-active-color: #7269ef;
@@ -132,4 +132,19 @@
   --bs-input-group-addon-bg: #36404a;
   --bs-input-check-border: #3f4a56;
   --bs-theme-mode-icon: "";
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--bs-gray-700);
 }
