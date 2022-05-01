@@ -1,11 +1,12 @@
 import React from "react";
-import { Search, Status } from "./Component";
+import { Search, Status, ListChatContent } from "./Component";
 
 function ListChat() {
     return (
         <>
             <Search />
             <Status />
+            <ListChatContent />
         </>
     );
 }
