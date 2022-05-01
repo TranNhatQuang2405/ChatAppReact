@@ -1,12 +1,12 @@
 import React from "react";
 import "./listChatContent.css";
 import { Avatar } from "components";
-import { Col } from "react-bootstrap";
+import { Col, Badge } from "react-bootstrap";
 function ListChatContent() {
     return (
         <div className="pt-3 px-3">
             <h5 className="fz-16 pb-3">Recent</h5>
-            <div className="d-flex">
+            <div className="p-2 d-flex cur-pointer listChatContent__child">
                 <Col lg={2} xs={2} className="align-self-center">
                     <Avatar width="85%" status={true} />
                 </Col>
@@ -22,6 +22,7 @@ function ListChatContent() {
                     <div className="fz-11 listChatContent__text-color">
                         11:00 AM
                     </div>
+                    <Badge className="float-end mt-2" pill bg="danger">9+</Badge>
                 </Col>
             </div>
         </div>

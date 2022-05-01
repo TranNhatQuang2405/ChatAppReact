@@ -1,0 +1,21 @@
+.listContact__dropdownToggle {
+    background-color: transparent !important;
+    --bs-text-opacity: 1;
+    padding: 0 5px;
+    color: var(--bs-text-muted) !important;
+    border-color: transparent !important;
+}
+.listContact__dropdownItem:active {
+    color: #1f2327 !important;
+    text-decoration: none;
+    background-color: #f8f9fa !important;
+}
+.listContact__AtoZ {
+    color: #7268ef !important;
+    font-weight: 700 !important;
+    padding: 0.2rem 1rem !important;
+    font-size: 20px;
+}
+.listContact__GroupAtoZ {
+    padding: 0 auto;
+}

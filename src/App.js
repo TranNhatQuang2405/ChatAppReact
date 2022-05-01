@@ -1,11 +1,11 @@
 import "./App.css";
-import { Body } from "./components";
+import { Body, TabBar } from "./components";
 import { TabBarContent } from "./layout/content";
 
 function App() {
     return (
         <Body>
-            <TabBarContent />
+            <TabBar />
         </Body>
     );
 }

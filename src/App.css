@@ -218,3 +218,7 @@ h6 {
 .fz-30 {
   font-size: 30px;
 }
+
+.cur-pointer {
+  cursor: pointer;
+}
