@@ -1,6 +1,9 @@
 import React from "react";
 import ListChat from "./ListChat";
-import { Col } from "react-bootstrap";
+import ListGroup from "./ListGroup";
+import ListContact from "./ListContact";
+import { Col, Tab } from "react-bootstrap";
+
 function TabBarContent() {
     return (
         <Col
@@ -11,7 +14,19 @@ function TabBarContent() {
                 backgroundColor: "var(--bs-sidebar-sub-bg)",
             }}
         >
-            <ListChat />
+            <Tab.Content>
+                <Tab.Pane eventKey="profile">Profile</Tab.Pane>
+                <Tab.Pane eventKey="chats">
+                    <ListChat />
+                </Tab.Pane>
+                <Tab.Pane eventKey="group">
+                    <ListGroup />
+                </Tab.Pane>
+                <Tab.Pane eventKey="contact">
+                    <ListContact />
+                </Tab.Pane>
+                <Tab.Pane eventKey="setting">Setting</Tab.Pane>
+            </Tab.Content>
         </Col>
     );
 }

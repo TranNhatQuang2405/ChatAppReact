@@ -1,3 +1,10 @@
 .listChatContent__text-color {
     color: var(--bs-gray-600);
 }
+
+.listChatContent__child:hover {
+    background-color: var(--bs-light);
+}
+.listChatContent__child {
+    border-radius: 0.3rem !important;
+}
