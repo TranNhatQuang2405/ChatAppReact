@@ -4,7 +4,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import "./seach.css";
 function Search() {
     return (
-        <div className="pt-4 px-4">
+        <div className="pt-4 px-3">
             <h4 className="mb-4">Chats</h4>
             <InputGroup className="mb-3 rounded-3">
                 <InputGroup.Text

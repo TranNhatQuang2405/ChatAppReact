@@ -7,6 +7,8 @@ import { store } from "./configs/redux/store";
 import { Provider } from "react-redux";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 ReactDOM.render(
     <React.StrictMode>
