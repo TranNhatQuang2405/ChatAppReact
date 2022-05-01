@@ -14,6 +14,12 @@ function Status() {
             {
                 breakpoint: 992,
                 settings: {
+                    slidesToShow: 8,
+                },
+            },
+            {
+                breakpoint: 650,
+                settings: {
                     slidesToShow: 7,
                 },
             },
@@ -26,7 +32,7 @@ function Status() {
         ],
     };
     return (
-        <div className="pd-4 px-3">
+        <div className="px-3">
             <Slider {...settings}>
                 <StatusItem />
                 <StatusItem />
