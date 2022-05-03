@@ -1,14 +1,34 @@
 import React from "react";
 import Tab from "react-bootstrap/Tab";
-import { Col, Nav } from "react-bootstrap";
+import logo from "image/logo.png";
+import Avatar from "components/Avatar";
+import { Col, Nav, Dropdown } from "react-bootstrap";
 import { TabBarContent } from "layout/content";
-import "./TabBar.css";
 import { change } from "configs/redux/Slice/ThemeSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { auth } from "configs/firebase/config";
+import { SetIsPending } from "configs/redux/Slice/UserSlice";
+import { updateRecord } from "configs/firebase/service";
+import { useNavigate } from "react-router-dom";
+import "./TabBar.css";
 
 function TabBar() {
   const theme = useSelector((state) => state.LocalTheme.theme);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    const userId = auth.currentUser.uid;
+    dispatch(SetIsPending());
+    auth
+      .signOut()
+      .then(() => {
+        updateRecord("users", "uid", userId, {
+          IsOnline: false,
+        });
+      })
+      .catch((e) => console.log(e));
+  };
 
   return (
     <Tab.Container defaultActiveKey="chats">
@@ -24,8 +44,11 @@ function TabBar() {
           <Nav.Item className="nav_item_hide">
             <img
               className="logo"
-              src="https://img.icons8.com/material-outlined/96/7269e6/attack-on-titan.png"
+              src={logo}
               alt="Chats"
+              onClick={() => {
+                navigate("/");
+              }}
             />
           </Nav.Item>
           <Nav.Item>
@@ -69,7 +92,27 @@ function TabBar() {
             </button>
           </Nav.Item>
           <Nav.Item className="nav_item_hide">
-            <img className="img_Avatar" src="/logo192.png" alt="Chats" />
+            <Dropdown>
+              <Dropdown.Toggle as="div" bsPrefix="listContact__dropdownToggle">
+                <Avatar width="4rem" />
+              </Dropdown.Toggle>
+              <Dropdown.Menu
+                align="end"
+                className="text-muted ChatContent__dropdown-background"
+              >
+                <Dropdown.Item className="listContact__dropdownItem ChatContent__dropdownLink">
+                  Muted
+                  <i className="bi bi-bell-slash float-end"></i>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  className="listContact__dropdownItem ChatContent__dropdownLink"
+                  onClick={() => handleSignOut()}
+                >
+                  Log out
+                  <i className="bi bi-box-arrow-left float-end"></i>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Nav.Item>
         </Nav>
       </Col>

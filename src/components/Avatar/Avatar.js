@@ -1,13 +1,15 @@
 import React from "react";
 import { Image } from "react-bootstrap";
 import "./Avatar.css";
+import image from "image/user.png";
 
 function Avatar(props) {
-  const { width, status } = props;
+  const { width, status, url } = props;
   return (
     <div style={{ position: "relative" }} className="cur-pointer">
       <Image
-        src="https://themesbrand.com/chatvia/layouts/assets/images/users/avatar-5.jpg"
+        src={(url && url) || image}
+        alt="Avatar"
         roundedCircle
         style={{
           width: `${width}`,
