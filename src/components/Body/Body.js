@@ -25,4 +25,4 @@ function Body({ children }) {
     );
 }
 
-export default Body;
+export default React.memo(Body);

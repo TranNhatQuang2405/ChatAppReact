@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Row,
     Col,
@@ -7,10 +7,18 @@ import {
     Badge,
     OverlayTrigger,
     Tooltip,
+    Modal,
+    Form,
+    Button,
 } from "react-bootstrap";
 import "./ListGroup.css";
 import { Avatar } from "components";
+import { useSelector } from "react-redux";
+
 function ListGroup() {
+    const [show, setShow] = useState(false);
+    const localTheme = useSelector((state) => state.LocalTheme.theme);
+
     return (
         <div className="pt-4 px-3 ListGroup__Parent">
             <Row>
@@ -18,11 +26,58 @@ function ListGroup() {
                     <h4 className="mb-4">Groups</h4>
                 </Col>
                 <Col>
+                    <Modal
+                        show={show}
+                        centered
+                        onHide={() => setShow(false)}
+                        data-layout-mode={localTheme}
+                    >
+                        <Modal.Header closeButton className="modal__bg-fix">
+                            <h5>Create Group</h5>
+                        </Modal.Header>
+                        <Modal.Body className="modal__bg-fix">
+                            <div className="mb-4">
+                                <Form.Label htmlFor="group_name">
+                                    Group Name
+                                </Form.Label>
+                                <InputGroup className="mb-4 rounded-3">
+                                    <FormControl
+                                        className="bg-light border-0 seach__text-color lh-2"
+                                        placeholder="Set name for group"
+                                    />
+                                </InputGroup>
+                            </div>
+                            <div className="mb-4">
+                                <Form.Label htmlFor="group_name">
+                                    Description
+                                </Form.Label>
+                                <InputGroup className="mb-4 rounded-3">
+                                    <FormControl
+                                        as="textarea"
+                                        className="bg-light border-0 seach__text-color lh-2"
+                                        placeholder="Description..."
+                                    />
+                                </InputGroup>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer className="modal__bg-fix">
+                            <Button
+                                bsPrefix="btn_color"
+                                onClick={() => setShow(false)}
+                            >
+                                Close
+                            </Button>
+                            <Button bsPrefix="btn_color">Create Group</Button>
+                        </Modal.Footer>
+                    </Modal>
                     <OverlayTrigger
                         placement="bottom"
                         overlay={<Tooltip>Create Group</Tooltip>}
                     >
-                        <i className="bi bi-people-fill float-end me-2 cur-pointer"></i>
+                        <i
+                            className="bi bi-people-fill float-end me-2 cur-pointer"
+                            onClick={() => setShow(true)}
+                        ></i>
                     </OverlayTrigger>
                 </Col>
             </Row>
@@ -31,10 +86,7 @@ function ListGroup() {
                     className="bg-light ps-3 pe-1 text-muted-bg border-0"
                     id="basic-addon1"
                 >
-                    <i
-                        className="bi bi-search cur-pointer"
-                        style={{ lineHeight: 2 }}
-                    ></i>
+                    <i className="bi bi-search cur-pointer lh-2"></i>
                 </InputGroup.Text>
                 <FormControl
                     className="bg-light border-0 seach__text-color"
