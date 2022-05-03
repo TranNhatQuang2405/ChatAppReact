@@ -1,13 +1,16 @@
 import "./App.css";
-import { Body, TabBar } from "./components";
-import { ChatContent } from "layout/content/";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainPage from "layout/Page/MainPage/MainPage";
+import LoginPage from "layout/Page/LoginPage/LoginPage";
 
 function App() {
     return (
-        <Body>
-            <TabBar />
-            <ChatContent />
-        </Body>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<LoginPage />}></Route>
+                <Route path="MainPage" element={<MainPage />}></Route>
+            </Routes>
+        </BrowserRouter>
     );
 }
 

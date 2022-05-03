@@ -5,7 +5,9 @@ import "./Message.css";
 function Message(props) {
   const a =
     "https://w0.peakpx.com/wallpaper/24/571/HD-wallpaper-scared-girl-anime-anim.jpg";
-  const list = [a, a, a, a, a, a, a, a, a, a, a];
+  const b =
+    "https://yt3.ggpht.com/ytc/AKedOLRAIbph_gdGzZ9tOuxxzrWJYHGXFLbBXDUVz6HE2w=s900-c-k-c0x00ffffff-no-rj";
+  const list = [b, a, a, a, a, a, a, a, a, a, a];
   const WIDTH = 100 / Math.ceil(Math.sqrt(list.length));
   const { showSend } = props;
   if (1 == 2)
@@ -50,7 +52,7 @@ function Message(props) {
         </div>
       </div>
     );
-  else if (1 == 1)
+  else if (1 == 5)
     return (
       <div className="Message__Parent">
         <div className="d-flex flex-column-reverse">
