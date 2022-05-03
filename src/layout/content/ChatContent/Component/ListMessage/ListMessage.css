@@ -1,7 +1,7 @@
 .ListMessage__parent{
     display: flex;
     position: relative;
-    flex-direction: column;
+    flex-direction: column-reverse;
 }
 .ListMessage__listChild{
     position: absolute;
