@@ -1,9 +1,15 @@
 import React from "react";
 import { ref, onValue, query, get } from "firebase/database";
 import { db } from "configs/firebase/config";
+import {
+    findUserByUid,
+    getAllChildMessage,
+} from "configs/firebase/ServiceFirebase/ServiceFind";
 const sortTime = (a, b) => {
-    if (a.createdAt > b.createdAt) return 1;
-    else if (a.createdAt < b.createdAt) return -1;
+    a = a.val;
+    b = b.val;
+    if (a.createAt > b.createAt) return 1;
+    else if (a.createAt < b.createAt) return -1;
     else return 0;
 };
 
@@ -13,11 +19,13 @@ const useInfoMessage = (key, uid) => {
         let dbRef = query(ref(db, `messages/${key}`));
         const unsubscribe = onValue(
             dbRef,
-            (snapshot) => {
+            async (snapshot) => {
                 console.log("UseInfo: ", snapshot.exists());
                 if (snapshot.exists()) {
                     var val = snapshot.val();
-                    var listChildMessage = val.listChildMessage;
+                    var listChildMessage = await getAllChildMessage(
+                        snapshot.key
+                    );
                     var NewMessage = 0;
                     var LastMessage = "";
                     var type = val.type;
@@ -25,6 +33,7 @@ const useInfoMessage = (key, uid) => {
                     var name = val.name;
                     var timeUpdate = val.timeUpdate;
                     var date = new Date(timeUpdate);
+                    var friend = null;
                     var isOnline = true;
                     var time = date.toLocaleTimeString("en-US", {
                         hour12: true,
@@ -41,17 +50,30 @@ const useInfoMessage = (key, uid) => {
                         });
                     }
                     if (type === 1) {
+                        const friendUid = val.listUser.filter(
+                            (value) => value !== uid
+                        )[0];
+                        friend = await findUserByUid(friendUid);
+                        name = friend.displayName;
                     }
-                    if (listChildMessage) {
+                    if (listChildMessage && listChildMessage.length > 0) {
                         listChildMessage.sort(sortTime);
-                        for (var i = 0; i < 10; i++) {
+                        for (
+                            var i = 0;
+                            i < 10 && i < listChildMessage.length;
+                            i++
+                        ) {
                             if (
-                                listChildMessage[i].listRead.indexOf(uid) === -1
+                                listChildMessage[i].val.listSeen.indexOf(
+                                    uid
+                                ) === -1
                             ) {
                                 NewMessage++;
                             }
                         }
-                        LastMessage = listChildMessage[0];
+                        LastMessage =
+                            listChildMessage[listChildMessage.length - 1].val
+                                .title;
                     }
                     setInfo((prev) => ({
                         ...prev,
@@ -63,6 +85,7 @@ const useInfoMessage = (key, uid) => {
                         timeUpdate: timeUpdate,
                         key: snapshot.key,
                         isOnline: isOnline,
+                        friend: friend,
                     }));
                 } else {
                     get(dbRef).then((snapshot) => {

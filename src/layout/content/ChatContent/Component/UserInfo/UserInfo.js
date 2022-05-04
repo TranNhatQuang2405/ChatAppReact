@@ -11,11 +11,7 @@ function UserInfo({ showInfo, setShowInfo, info }) {
                 <i className="bi bi-x-circle-fill"></i>
             </div>
             <div className="ChatContent__userInfo-avatar">
-                <Avatar
-                    width="5rem"
-                    url={info.photoURL}
-                    status={info.isOnline}
-                />
+            <Avatar width="5rem" url={info.photoURL} />
                 <div>{info.name}</div>
             </div>
             <div className="ChatContent__userInfo-body  fix_scroll p-4">

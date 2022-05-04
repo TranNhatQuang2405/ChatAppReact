@@ -13,7 +13,13 @@ function ListChatItem(props) {
     const dispatch = useDispatch();
     const [info] = useInfoMessage(keyId, currentUser.uid);
     const handleShow = () => {
-        dispatch(GetCurrentMessage({ key: keyId, typeMessage: type }));
+        dispatch(
+            GetCurrentMessage({
+                key: keyId,
+                typeMessage: type,
+                friend: info.friend,
+            })
+        );
         dispatch(show());
     };
     useEffect(() => {
@@ -39,9 +45,11 @@ function ListChatItem(props) {
                     <div className="fz-11 listChatContent__text-color">
                         {info.time}
                     </div>
-                    <Badge className="float-end mt-2" pill bg="danger">
-                        {info.NewMessage}
-                    </Badge>
+                    {info.NewMessage > 0 && (
+                        <Badge className="float-end mt-2" pill bg="danger">
+                            {info.NewMessage}
+                        </Badge>
+                    )}
                 </Col>
             </div>
         );

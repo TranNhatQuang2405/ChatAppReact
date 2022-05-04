@@ -5,16 +5,22 @@ import { deleteFriend } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
 import { useSelector, useDispatch } from "react-redux";
 import { show } from "configs/redux/Slice/ShowMessageSlice";
+import { getMessageByFriendUid } from "configs/firebase/ServiceFirebase/ServiceFind";
 
 function ContactItem(props) {
     const { friend } = props;
     const currentUser = useSelector((state) => state.UserInfo.user);
     const dispatch = useDispatch();
 
-    const handleShow = () => {
+    const handleDropdown = (e) => {
+        e.stopPropagation();
+    };
+
+    const handleShow = async () => {
+        var key = await getMessageByFriendUid(friend.uid, currentUser.uid);
         dispatch(
             GetCurrentMessage({
-                key: null,
+                key: key,
                 typeMessage: 1,
                 friend: friend,
             })
@@ -42,7 +48,7 @@ function ContactItem(props) {
                     </h5>
                 </Col>
                 <Col lg="auto" xs="auto" className="align-self-center">
-                    <Dropdown>
+                    <Dropdown onClick={handleDropdown}>
                         <Dropdown.Toggle
                             as="div"
                             bsPrefix="listContact__dropdownToggle"

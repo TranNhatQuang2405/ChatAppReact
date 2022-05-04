@@ -1,4 +1,9 @@
-import { addRecord, findExactRecord, deleteRecord } from "./service";
+import {
+    addRecord,
+    findExactRecord,
+    deleteRecord,
+    updateSpecialChildRecord,
+} from "./service";
 import { findUserKeyByUid } from "./ServiceFind";
 
 export const addUser = async (user, _tokenResponse) => {
@@ -70,4 +75,27 @@ export const addMessage = async (type, name, url, describe, listUser) => {
             type: type,
         });
     });
+    return keyMessage;
+};
+
+export const addChildMessage = async (key, type, uid, title, url, fileName) => {
+    var date = new Date();
+    var utc = date.getTime() + date.getTimezoneOffset() * 60000;
+    var cdate = new Date(utc + 3600000 * 7);
+
+    await addRecord(`messages/${key}/listChildMessage`, {
+        type: type,
+        uidSend: uid,
+        title: title,
+        urls: url,
+        fileName: fileName,
+        listSeen: [uid],
+        timeSend: cdate.getTime(),
+    });
+    await updateSpecialChildRecord(
+        "messages",
+        key,
+        "timeUpdate",
+        cdate.getTime()
+    );
 };

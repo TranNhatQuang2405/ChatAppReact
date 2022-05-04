@@ -141,6 +141,24 @@ export const updateRecord = async (colect, child, value, data) => {
     }
 };
 
+export const updateSpecialChildRecord = async (colect, key, child, data) => {
+    try {
+        const queryGet = query(ref(db, `${colect}/${key}`));
+
+        await get(queryGet)
+            .then(async (snapshot) => {
+                var val = snapshot.val();
+                await update(ref(db, `${colect}/${key}`), {
+                    ...val,
+                    [child]: data,
+                });
+            })
+            .catch((e) => console.log(e));
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const deleteRecord = async (colect, child, value) => {
     try {
         const queryGet = query(

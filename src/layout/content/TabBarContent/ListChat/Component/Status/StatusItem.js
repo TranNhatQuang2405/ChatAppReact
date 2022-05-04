@@ -4,22 +4,25 @@ import Avatar from "components/Avatar";
 import useIsOnline from "configs/customHook/useIsOnline";
 import { show } from "configs/redux/Slice/ShowMessageSlice";
 import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getMessageByFriendUid } from "configs/firebase/ServiceFirebase/ServiceFind";
+
 function StatusItem(props) {
+    const currentUser = useSelector((state) => state.UserInfo.user);
     const { keyId, friend } = props;
     const [isOnline] = useIsOnline(keyId);
     const dispatch = useDispatch();
-    const handleShow = () => {
+    const handleShow = async () => {
+        var key = await getMessageByFriendUid(friend.uid, currentUser.uid);
         dispatch(
             GetCurrentMessage({
-                key: null,
+                key: key,
                 typeMessage: 1,
-                friend: friend,
+                friend: { ...friend, key: keyId },
             })
         );
         dispatch(show());
     };
-
     if (friend)
         return (
             <Col

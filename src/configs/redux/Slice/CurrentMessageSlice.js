@@ -38,7 +38,6 @@ export const CurrentMessageSlice = createSlice({
             const value = action.payload.val;
             const type = action.payload.typeMessage;
             const friend = action.payload.friend;
-
             if (type === 1) {
                 if (value.val) {
                     state.data = {
@@ -48,6 +47,8 @@ export const CurrentMessageSlice = createSlice({
                         name: friend.displayName,
                         key: value.key,
                         photoURL: friend.photoURL,
+                        keyUser: friend.key,
+                        UidFriend: friend.uid,
                         timeUpdate: value.val.timeUpdate,
                         describe: null,
                         email: friend.email,
@@ -58,6 +59,7 @@ export const CurrentMessageSlice = createSlice({
                         type: 1,
                         listChildMessage: null,
                         listUser: null,
+                        UidFriend: friend.uid,
                         name: friend.displayName,
                         key: null,
                         photoURL: friend.photoURL,
@@ -65,6 +67,7 @@ export const CurrentMessageSlice = createSlice({
                         describe: null,
                         email: friend.email,
                         isOnline: friend.isOnline,
+                        keyUser: friend.key,
                     };
                 }
             }
