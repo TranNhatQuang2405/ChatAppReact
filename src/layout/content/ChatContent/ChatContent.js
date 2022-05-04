@@ -11,7 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { invisible } from "configs/redux/Slice/ShowMessageSlice";
 import { ListMessage, UserInfo } from "./Component";
-import "./chatContent.css";
+import "./ChatContent.css";
 function ChatContent() {
     const show = useSelector((state) => state.ShowMessage.value);
     const [showInfo, setShowInfo] = useState(false);

@@ -13,7 +13,7 @@ import { Avatar, CardInvite } from "components";
 import { useSelector } from "react-redux";
 import { validateUTF8Name } from "configs/Validate";
 import { findRecordString } from "configs/firebase/service";
-import "./listContact.css";
+import "./ListContact.css";
 
 function ListContact() {
     const localTheme = useSelector((state) => state.LocalTheme.theme);
