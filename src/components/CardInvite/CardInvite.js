@@ -13,7 +13,7 @@ function CardInvite(props) {
     const handleInvite = async () => {
         if (invite === false) {
             setInvite("pending");
-            inviteFriend(keyId, currentUser.uid)
+            inviteFriend(keyId, value.uid, currentUser.uid)
                 .then(() => {
                     setInvite(true);
                 })

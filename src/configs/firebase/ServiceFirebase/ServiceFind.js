@@ -1,4 +1,8 @@
-import { findRecordString, findAllChildOfSpecialCollect } from "./service";
+import {
+    findRecordString,
+    findAllChildOfSpecialCollect,
+    findExactRecord,
+} from "./service";
 
 export const findFriendToInvite = async (searchInvite, uid) => {
     const listFriend = await findRecordString(
@@ -51,4 +55,10 @@ export const getAllListWait = async (uid) => {
         "listInvite"
     );
     return listFriendWait;
+};
+
+export const findUserByUid = async (uid) => {
+    const result = await findExactRecord("users", "uid", uid);
+    if (result && result.length > 0) return result[0].val;
+    return result;
 };

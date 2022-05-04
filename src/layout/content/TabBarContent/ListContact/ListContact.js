@@ -9,7 +9,7 @@ import {
     Dropdown,
     Modal,
 } from "react-bootstrap";
-import { Avatar, CardInvite } from "components";
+import { Avatar, CardInvite, CardAccept } from "components";
 import { useSelector, useDispatch } from "react-redux";
 import { validateUTF8Name } from "configs/Validate";
 import { findFriendToInvite } from "configs/firebase/ServiceFirebase/ServiceFind";
@@ -56,7 +56,10 @@ function ListContact() {
                     <Modal
                         show={show}
                         centered
-                        onHide={() => setShow(false)}
+                        onHide={() => {
+                            setShow(false);
+                            setSearchInvite("");
+                        }}
                         data-layout-mode={localTheme}
                     >
                         <Modal.Header closeButton className="modal__bg-fix">
@@ -122,7 +125,9 @@ function ListContact() {
                 show={showRequset}
                 centered
                 onShow={() => dispatch(GetAll(currentUser.uid))}
-                onHide={() => setShowRequset(false)}
+                onHide={() => {
+                    setShowRequset(false);
+                }}
                 data-layout-mode={localTheme}
             >
                 <Modal.Header closeButton className="modal__bg-fix">
@@ -149,8 +154,12 @@ function ListContact() {
                     <h6>List request</h6>
                     {!listFriendWait.pending &&
                         listFriendWait.listUser &&
-                        listFriendWait.listUser.map((value, key) => (
-                            <div key={key}>{value.uid}</div>
+                        listFriendWait.listUser.map((value) => (
+                            <CardAccept
+                                key={value.key}
+                                keyId={value.key}
+                                uid={value.val.uid}
+                            />
                         ))}
                 </Modal.Body>
             </Modal>

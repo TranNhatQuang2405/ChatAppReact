@@ -2,6 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import { Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import './Body.css';
 function Body({ children }) {
     // @ts-ignore
     const localTheme = useSelector((state) => state.LocalTheme.theme);
