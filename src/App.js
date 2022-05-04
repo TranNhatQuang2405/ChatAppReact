@@ -9,8 +9,18 @@ function App() {
     return (
         <AuthProvider>
             <Routes>
-                <Route path="Login" element={<LoginPage />}></Route>
-                <Route path="*" element={<Navigate to="Login" />}></Route>
+                <Route
+                    path="/Login"
+                    element={<LoginPage />}
+                ></Route>
+                <Route
+                    path="/MainPage"
+                    element={<MainPage />}
+                ></Route>
+                <Route
+                    path="*"
+                    element={<Navigate to="/Login" />}
+                />
             </Routes>
         </AuthProvider>
     );

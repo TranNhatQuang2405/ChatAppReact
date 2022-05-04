@@ -15,7 +15,7 @@ function AuthProvider({ children }) {
                 dispatch(LogIn({ displayName, email, uid, photoURL }));
             } else {
                 dispatch(LogOut());
-                navigate("Login");
+                navigate("/Login");
             }
         });
         return () => {
