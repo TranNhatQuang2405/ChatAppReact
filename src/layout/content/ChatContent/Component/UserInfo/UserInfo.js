@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { Avatar } from "components";
 import { Accordion } from "react-bootstrap";
+import CardMember from "./CardMember";
 function UserInfo({ showInfo, setShowInfo, info }) {
     return (
         <div className={`ChatContent__userInfo ${showInfo ? "show" : ""}`}>
@@ -54,6 +55,26 @@ function UserInfo({ showInfo, setShowInfo, info }) {
                             </div>
                         </Accordion.Body>
                     </Accordion.Item>
+                    {info.type === 2 && (
+                        <Accordion.Item
+                            className="userInfo__AccordionItem"
+                            eventKey="2"
+                        >
+                            <Accordion.Header className="header__AccordionItem">
+                                <h6>
+                                    <i className="bi bi-people-fill pe-2 fz-20"></i>
+                                    List Member
+                                </h6>
+                            </Accordion.Header>
+                            <Accordion.Body>
+                                {info.listUser &&
+                                    info.listUser.length > 0 &&
+                                    info.listUser.map((value, index) => (
+                                        <CardMember key={index} uid={value} />
+                                    ))}
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    )}
                     <Accordion.Item
                         className="userInfo__AccordionItem"
                         eventKey="1"

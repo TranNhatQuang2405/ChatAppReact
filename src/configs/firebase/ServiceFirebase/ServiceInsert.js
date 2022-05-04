@@ -57,7 +57,14 @@ export const AddFriend = async (friendUid, currentUserId) => {
     }
 };
 
-export const addMessage = async (type, name, url, describe, listUser) => {
+export const addMessage = async (
+    type,
+    name,
+    describe,
+    url,
+    listUser,
+    createdBy
+) => {
     var date = new Date();
     var utc = date.getTime() + date.getTimezoneOffset() * 60000;
     var cdate = new Date(utc + 3600000 * 7);
@@ -68,6 +75,7 @@ export const addMessage = async (type, name, url, describe, listUser) => {
         listUser: [...listUser],
         listMessage: [],
         timeUpdate: cdate.getTime(),
+        createdBy: createdBy,
     });
     listUser.forEach(async (uid) => {
         const key = await findUserKeyByUid(uid);
