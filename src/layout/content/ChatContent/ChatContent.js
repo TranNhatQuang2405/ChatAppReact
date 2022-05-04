@@ -7,12 +7,11 @@ import {
     InputGroup,
     FormControl,
     Button,
-    Accordion,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { invisible } from "configs/redux/Slice/ShowMessageSlice";
-import { ListMessage } from "./Component";
-import "./ChatContent.css";
+import { ListMessage, UserInfo } from "./Component";
+import "./chatContent.css";
 function ChatContent() {
     const show = useSelector((state) => state.ShowMessage.value);
     const [showInfo, setShowInfo] = useState(false);
@@ -22,6 +21,7 @@ function ChatContent() {
         : "chatContent__body";
     return (
         <Col lg className={className_chat}>
+            {/* Body message*/}
             <Row className="bottom_border">
                 <Col lg={4} xs={8}>
                     <div className="p-2 p-lg-3 align-content-center flex-grow-0 d-inline-flex">
@@ -126,36 +126,8 @@ function ChatContent() {
                     </Button>
                 </InputGroup>
             </Row>
-            <div className={`ChatContent__userInfo ${showInfo ? "show" : ""}`}>
-                <div
-                    className="ChatContent__userInfo-buttonClose"
-                    onClick={() => setShowInfo(false)}
-                >
-                    <i className="bi bi-x-circle-fill"></i>
-                </div>
-                <div className="ChatContent__userInfo-avatar">
-                    <Avatar width="5rem" />
-                    <div>Trần Nhất Quang</div>
-                </div>
-                <div className="ChatContent__userInfo-body p-4">
-                    <Accordion defaultActiveKey="0">
-                        <Accordion.Item
-                            className="userInfo__AccordionItem"
-                            eventKey="0"
-                        >
-                            <Accordion.Header> About</Accordion.Header>
-                            <Accordion.Body>11111</Accordion.Body>
-                        </Accordion.Item>
-                        <Accordion.Item
-                            className="userInfo__AccordionItem"
-                            eventKey="1"
-                        >
-                            <Accordion.Header>Attached Files</Accordion.Header>
-                            <Accordion.Body>aaaaa</Accordion.Body>
-                        </Accordion.Item>
-                    </Accordion>
-                </div>
-            </div>
+            {/*Tab info */}
+            <UserInfo showInfo={showInfo} setShowInfo={setShowInfo} />
         </Col>
     );
 }

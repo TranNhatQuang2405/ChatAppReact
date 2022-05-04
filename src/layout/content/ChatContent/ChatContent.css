@@ -118,6 +118,18 @@
     font-weight: 500;
     border-bottom: 1px solid var(--bs-border-color)!important;
 }
+
+.ChatContent__userInfo-body{
+    flex-grow: 1;
+    overflow-y: auto;
+    -webkit-text-fill-color: unset;
+    color: rgba(0, 0, 0, 0);
+    transition: color 0.8s;
+}
+
+.ChatContent__userInfo-body:hover {
+    color: var(--bs-gray-400);
+}
 .userInfo__AccordionItem {
     background-color: var(--bs-accordion-bg) !important;
     border: 1px solid var(--bs-border-color)!important;

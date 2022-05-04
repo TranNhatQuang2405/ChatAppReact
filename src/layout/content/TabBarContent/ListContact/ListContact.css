@@ -50,3 +50,26 @@
         bottom: 52px;
     }
 } 
+
+.friend_request_parent{
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+    padding: 10px;
+    background-color: transparent;
+    border-radius: 10px;
+}
+.friend_request_parent:hover{
+    background-color: var(--bs-gray-200);
+}
+.friend_request_parent-image{
+    align-self: center;
+    font-size: x-large;
+    background-color: #7268ef;
+    padding: 8px 10px;
+    border-radius: 50%;
+}
+.friend_request_parent-text{
+    align-self: center;
+    margin-left: 10px;
+}

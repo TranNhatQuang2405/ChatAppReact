@@ -10,7 +10,7 @@ import {
 } from "firebase/database";
 import { db } from "./config";
 
-export const addRecord = (colect, data) => {
+export const addRecord = async (colect, data) => {
     try {
         push(ref(db, colect), {
             ...data,
@@ -21,9 +21,47 @@ export const addRecord = (colect, data) => {
     }
 };
 
-export const findId = (colect, data) => {};
+export const findRecordString = async (colect, child, value) => {
+    let listResult = [];
 
-export const updateRecord = (colect, child, value, data) => {
+    const queryGet = query(ref(db, colect), orderByChild(child));
+    await get(queryGet)
+        .then((snapshot) => {
+            snapshot.forEach((snapshotChild) => {
+                let key = snapshotChild.key;
+                let val = snapshotChild.val();
+                if (val[child].includes(value)) listResult.push({ key, val });
+            });
+        })
+        .catch((e) => {
+            console.log(e);
+        });
+    return listResult;
+};
+
+export const findExactRecord = async (colect, child, value) => {
+    let listResult = [];
+
+    const queryGet = query(
+        ref(db, colect),
+        orderByChild(child),
+        equalTo(value)
+    );
+    await get(queryGet)
+        .then((snapshot) => {
+            snapshot.forEach((snapshotChild) => {
+                let key = snapshotChild.key;
+                let value = snapshotChild.val();
+                listResult.push({ key, value });
+            });
+        })
+        .catch((e) => {
+            console.log(e);
+        });
+    return listResult;
+};
+
+export const updateRecord = async (colect, child, value, data) => {
     try {
         const queryGet = query(
             ref(db, colect),
@@ -31,7 +69,7 @@ export const updateRecord = (colect, child, value, data) => {
             equalTo(value)
         );
 
-        get(queryGet)
+        await get(queryGet)
             .then((snapshot) => {
                 snapshot.forEach((snapshotChild) => {
                     let key = snapshotChild.key;
