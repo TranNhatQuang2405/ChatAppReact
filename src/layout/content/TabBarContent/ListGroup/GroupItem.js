@@ -4,7 +4,6 @@ import { Col, Badge } from "react-bootstrap";
 
 function GroupItem(props) {
     const { keyId, val } = props;
-    console.log(val);
     return (
         <div className="p-2 d-flex cur-pointer listChatContent__child">
             <Col lg={2} xs={2} className="align-self-center">
@@ -22,4 +21,4 @@ function GroupItem(props) {
     );
 }
 
-export default GroupItem;
+export default React.memo(GroupItem);

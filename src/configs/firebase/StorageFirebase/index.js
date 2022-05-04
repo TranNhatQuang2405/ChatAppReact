@@ -20,9 +20,10 @@ export const uploadImage = async (file) => {
     try {
         const snapshot = await uploadBytes(childRef, file);
         result = await getDownloadURL(snapshot.ref);
+        return result;
     } catch (e) {
         console.log(e);
         return "";
     }
-    return result;
+    
 };

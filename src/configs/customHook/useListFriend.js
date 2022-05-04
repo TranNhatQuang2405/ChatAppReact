@@ -25,11 +25,14 @@ const useListFriend = (uid) => {
         const unsubscribe = onValue(
             dbRef,
             (snapshot) => {
-                const list = [];
-                snapshot.forEach((childSnapshot) => {
-                    list.push(childSnapshot.val().uid);
-                });
-                dispatch(add(list));
+                console.log(snapshot.val());
+                if (snapshot.val()) {
+                    const list = [];
+                    snapshot.forEach((childSnapshot) => {
+                        list.push(childSnapshot.val().uid);
+                    });
+                    dispatch(add(list));
+                }
             },
             {
                 onlyOnce: false,

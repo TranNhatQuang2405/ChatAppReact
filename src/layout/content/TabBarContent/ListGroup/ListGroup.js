@@ -36,9 +36,12 @@ function ListGroup() {
         image: "",
         file: null,
     });
+    console.log("Group: ", listGroup.length);
+    console.log("Info Ngoai: ", listGroupInfo.length);
 
     useListGroup(currentUser.uid);
     const filterListGroup = (val) => {
+        console.log("Info Trong: ", listGroupInfo.length);
         const tmp = listGroupInfo.filter((value) => {
             return value.key === val.key;
         });
@@ -63,14 +66,12 @@ function ListGroup() {
     const handleChangeImage = (e) => {
         if (e.target.files.length > 0) {
             setGroupCreate((prev) => {
+                const url = URL.createObjectURL(e.target.files[0]);
                 return {
                     ...prev,
                     file: e.target.files[0],
+                    image: url,
                 };
-            });
-            const url = URL.createObjectURL(e.target.files[0]);
-            setGroupCreate((prev) => {
-                return { ...prev, image: url };
             });
         }
     };
@@ -96,8 +97,7 @@ function ListGroup() {
             setShowDialog(true);
         } else {
             var url = "";
-            if (file !== null && file !== "")
-                url = await uploadImage(file, "demo");
+            if (file !== null && file) url = await uploadImage(file, "demo");
             if (url === undefined) url = "";
             addMessage(2, name, url, [currentUser.uid])
                 .then(() => {
@@ -122,6 +122,23 @@ function ListGroup() {
     };
 
     useEffect(() => {
+        let isMounteda = true;
+        const handleLoad = async () => {
+            listGroup.forEach(async (key) => {
+                const get = await findMessageByKey(key);
+                if (isMounteda)
+                    if (filterListGroup(get))
+                        setlistGroupInfo((prev) => [...prev, get]);
+            });
+        };
+        if (listGroup) handleLoad();
+        return () => {
+            isMounteda = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [listGroup]);
+
+    useEffect(() => {
         let isMounted = true;
         const handleGetData = async () => {
             if (isMounted) {
@@ -133,23 +150,6 @@ function ListGroup() {
             isMounted = false;
         };
     }, [currentUser.uid, dispatch]);
-
-    useEffect(() => {
-        let isMounted = true;
-        const handleLoad = async () => {
-            listGroup.forEach(async (key) => {
-                const get = await findMessageByKey(key);
-                if (isMounted)
-                    if (filterListGroup(get))
-                        setlistGroupInfo((prev) => [...prev, get]);
-            });
-        };
-        if (listGroup) handleLoad();
-        return () => {
-            isMounted = false;
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [listGroup]);
 
     return (
         <div className="pt-4 px-3 ListGroup__Parent">
@@ -300,4 +300,4 @@ function ListGroup() {
     );
 }
 
-export default ListGroup;
+export default React.memo(ListGroup);

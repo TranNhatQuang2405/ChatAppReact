@@ -14,10 +14,7 @@ export const AllGroupSlice = createSlice({
     initialState,
     reducers: {
         add: (state, action) => {
-            action.payload.forEach((child) => {
-                if (state.listGroup.indexOf(child) === -1)
-                    state.listGroup.push(child);
-            });
+            state.listGroup = action.payload;
         },
     },
     extraReducers: (builder) => {

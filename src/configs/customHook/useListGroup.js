@@ -29,11 +29,13 @@ const useListGroup = (uid) => {
         const unsubscribe = onValue(
             dbRef,
             (snapshot) => {
-                const list = [];
-                snapshot.forEach((childSnapshot) => {
-                    list.push(childSnapshot.val().messageId);
-                });
-                dispatch(add(list));
+                if (snapshot.val()) {
+                    const list = [];
+                    snapshot.forEach((childSnapshot) => {
+                        list.push(childSnapshot.val().messageId);
+                    });
+                    dispatch(add(list));
+                }
             },
             {
                 onlyOnce: false,
