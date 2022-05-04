@@ -12,11 +12,12 @@ import {
 import { Avatar, CardInvite } from "components";
 import { useSelector } from "react-redux";
 import { validateUTF8Name } from "configs/Validate";
-import { findRecordString } from "configs/firebase/service";
+import { findFriendToInvite } from "configs/firebase/ServiceFirebase/ServiceFind";
 import "./ListContact.css";
 
 function ListContact() {
     const localTheme = useSelector((state) => state.LocalTheme.theme);
+    const currentUser = useSelector((state) => state.UserInfo.user);
     const [show, setShow] = useState(false);
     const [showRequset, setShowRequset] = useState(false);
     const [searchInvite, setSearchInvite] = useState("");
@@ -29,10 +30,9 @@ function ListContact() {
     useEffect(() => {
         const GetResult = async () => {
             if (searchInvite && validateUTF8Name(searchInvite)) {
-                const result = await findRecordString(
-                    "users",
-                    "displayName",
-                    searchInvite
+                const result = await findFriendToInvite(
+                    searchInvite,
+                    currentUser.uid
                 );
                 setListToInvite(result);
             } else {
@@ -40,7 +40,7 @@ function ListContact() {
             }
         };
         GetResult();
-    }, [searchInvite]);
+    }, [currentUser.uid, searchInvite]);
 
     return (
         <div className="pt-4 px-3 ListContact__Parent">

@@ -8,7 +8,7 @@ import {
     equalTo,
     get,
 } from "firebase/database";
-import { db } from "./config";
+import { db } from "configs/firebase/config";
 
 export const addRecord = async (colect, data) => {
     try {
@@ -19,6 +19,21 @@ export const addRecord = async (colect, data) => {
     } catch (error) {
         console.log(error);
     }
+};
+
+export const findAll = async (colect, child) => {
+    let listResult = [];
+    const queryGet = query(ref(db, `${colect}/${child}`));
+    await get(queryGet)
+        .then((snapshot) => {
+            snapshot.forEach((snapshotChild) => {
+                let key = snapshotChild.key;
+                let val = snapshotChild.val();
+                listResult.push({ key, val });
+            });
+        })
+        .catch((e) => console.log(e));
+    return listResult;
 };
 
 export const findRecordString = async (colect, child, value) => {

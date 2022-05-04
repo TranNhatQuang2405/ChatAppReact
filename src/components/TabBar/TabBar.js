@@ -8,8 +8,8 @@ import { change } from "configs/redux/Slice/ThemeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { auth } from "configs/firebase/config";
 import { SetIsPending } from "configs/redux/Slice/UserSlice";
-import { updateRecord } from "configs/firebase/service";
 import { useNavigate } from "react-router-dom";
+import { updateLogOut } from "configs/firebase/ServiceFirebase/ServiceUpdate";
 import "./TabBar.css";
 
 function TabBar() {
@@ -24,9 +24,7 @@ function TabBar() {
     auth
       .signOut()
       .then(() => {
-        updateRecord("users", "uid", userId, {
-          IsOnline: false,
-        });
+        updateLogOut(userId);
       })
       .catch((e) => console.log(e));
   };

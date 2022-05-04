@@ -1,21 +1,32 @@
 import React, { useState } from "react";
 import Avatar from "components/Avatar";
 import User from "image/user.png";
+import { inviteFriend } from "configs/firebase/ServiceFirebase/ServiceInsert";
+import { useSelector } from "react-redux";
 import "./CardInvite.css";
 function CardInvite(props) {
     const [invite, setInvite] = useState(false);
+    const currentUser = useSelector((state) => state.UserInfo.user);
+
+    const { keyId, value } = props;
 
     const handleInvite = async () => {
         if (invite === false) {
             setInvite("pending");
-            setTimeout(() => setInvite(true), 2000);
+            inviteFriend(keyId, currentUser.uid)
+                .then(() => {
+                    setInvite(true);
+                })
+                .catch((e) => {
+                    console.log(e);
+                    setInvite(false);
+                });
         } else if (invite === true) {
             setInvite("pending");
             setTimeout(() => setInvite(false), 2000);
         }
     };
-
-    const { keyId, value } = props;
+    
     return (
         <div className="CardInvite__body">
             <div className="CardInvite__Image">

@@ -9,10 +9,8 @@ import {
     FacebookAuthProvider,
     fetchSignInMethodsForEmail,
 } from "firebase/auth";
-import { addRecord, updateRecord } from "configs/firebase/service";
-
-// const GoogleProvider = new GoogleAuthProvider();
-// const FacebookProvider = new FacebookAuthProvider();
+import { addUser } from "configs/firebase/ServiceFirebase/ServiceInsert";
+import { updateStatus } from "configs/firebase/ServiceFirebase/ServiceUpdate";
 
 const providers = {
     google: new GoogleAuthProvider(),
@@ -46,22 +44,9 @@ function LoginPage() {
             if (result) {
                 const { _tokenResponse, user } = result;
                 if (_tokenResponse?.isNewUser) {
-                    addRecord("users/", {
-                        displayName: user.displayName,
-                        email: user.email,
-                        photoURL: user.photoURL,
-                        uid: user.uid,
-                        listFriend: null,
-                        listGroup: null,
-                        listChat: null,
-                        listInvite: null,
-                        IsOnline: true,
-                        providerId: _tokenResponse.providerId,
-                    });
+                    addUser(user, _tokenResponse);
                 } else {
-                    updateRecord("users/", "uid", user.uid, {
-                        IsOnline: true,
-                    });
+                    updateStatus(user);
                 }
             }
         } catch (error) {
