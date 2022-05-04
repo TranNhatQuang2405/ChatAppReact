@@ -1,24 +1,11 @@
 import React from "react";
 import { ref, onValue, query, orderByChild, equalTo } from "firebase/database";
-import { findUserKeyByUid } from "configs/firebase/ServiceFirebase/ServiceFind";
 import { useDispatch } from "react-redux";
-import { add } from "configs/redux/Slice/AllGroupSlice";
+import { GetAll } from "configs/redux/Slice/AllGroupSlice";
 import { db } from "configs/firebase/config";
 
-const useListGroup = (uid) => {
-    const [key, setKey] = React.useState(null);
+const useListGroup = (key, uid) => {
     const dispatch = useDispatch();
-    React.useEffect(() => {
-        let isMounted = true;
-        const handleLoad = async () => {
-            const you = await findUserKeyByUid(uid);
-            if (isMounted) setKey(you);
-        };
-        if (uid) handleLoad();
-        return () => {
-            isMounted = false;
-        };
-    }, [uid]);
 
     React.useEffect(() => {
         let dbRef = query(
@@ -29,20 +16,23 @@ const useListGroup = (uid) => {
         const unsubscribe = onValue(
             dbRef,
             (snapshot) => {
-                if (snapshot.val()) {
-                    const list = [];
-                    snapshot.forEach((childSnapshot) => {
-                        list.push(childSnapshot.val().messageId);
-                    });
-                    dispatch(add(list));
-                }
+                console.log(snapshot.exists());
+                dispatch(GetAll(uid));
+                // console.log("List Grou: ", snapshot.val());
+                // if (snapshot.exists()) {
+                //     dispatch(GetAll(uid));
+                // } else {
+                //     console.log("empty");
+                // }
             },
             {
                 onlyOnce: false,
             }
         );
+
         return unsubscribe;
-    }, [dispatch, key]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [key]);
     return [true];
 };
 

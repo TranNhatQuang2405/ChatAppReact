@@ -10,81 +10,40 @@ import {
     Badge,
 } from "react-bootstrap";
 import { CardInvite, CardAccept } from "components";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { validateUTF8Name } from "configs/Validate";
 import { findFriendToInvite } from "configs/firebase/ServiceFirebase/ServiceFind";
-import { GetAll } from "configs/redux/Slice/ListFriendWaitSlice";
-import useListFriend from "configs/customHook/useListFriend";
 import ContactItem from "./ContactItem";
-import { findUserByUid } from "configs/firebase/ServiceFirebase/ServiceFind";
-import "./ListContact.css";
-import useFriendRequest from "configs/customHook/useFriendRequest";
+import "./listContact.css";
 
 function ListContact() {
-    const dispatch = useDispatch();
     const localTheme = useSelector((state) => state.LocalTheme.theme);
     const currentUser = useSelector((state) => state.UserInfo.user);
     const listFriendWait = useSelector((state) => state.ListFriendWait);
     const listFriend = useSelector((state) => state.AllFriend.listFriend);
-    const [listFriendInfo, setListFriendInfo] = useState([]);
     const [show, setShow] = useState(false);
     const [showRequset, setShowRequset] = useState(false);
     const [searchInvite, setSearchInvite] = useState("");
     const [listToInvite, setListToInvite] = useState([]);
-    useListFriend(currentUser.uid);
-    useFriendRequest(currentUser.uid);
-
-    const filterListFriend = (val) => {
-        const tmp = listFriendInfo.filter((value) => {
-            return value.uid === val.uid;
-        });
-        if (tmp.length > 0) return false;
-        else return true;
-    };
+    const [listFriendInfo, setListFriendInfo] = useState(listFriend);
 
     const sortName = (a, b) => {
-        if (a.displayName < b.displayName) {
+        if (a.val.displayName < b.val.displayName) {
             return -1;
         }
-        if (a.displayName > b.displayName) {
+        if (a.val.displayName > b.val.displayName) {
             return 1;
         }
         return 0;
     };
-
-    React.useEffect(() => {
-        let isMounted = true;
-        const handleLoad = async () => {
-            listFriend.forEach(async (uid) => {
-                const get = await findUserByUid(uid);
-                if (isMounted)
-                    if (filterListFriend(get))
-                        setListFriendInfo((prev) => [...prev, get]);
-            });
-        };
-        if (listFriend) handleLoad();
-        return () => {
-            isMounted = false;
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        setListFriendInfo([...listFriend]);
+        return () => {};
     }, [listFriend]);
 
     const handleChangeSearchInvite = (e) => {
         setSearchInvite(e.target.value);
     };
-
-    useEffect(() => {
-        let isMounted = true;
-        const handleGetData = async () => {
-            if (isMounted) {
-                dispatch(GetAll(currentUser.uid));
-            }
-        };
-        handleGetData();
-        return () => {
-            isMounted = false;
-        };
-    }, [currentUser.uid, dispatch]);
 
     useEffect(() => {
         const GetResult = async () => {
@@ -180,7 +139,6 @@ function ListContact() {
             <Modal
                 show={showRequset}
                 centered
-                onShow={() => dispatch(GetAll(currentUser.uid))}
                 onHide={() => {
                     setShowRequset(false);
                 }}
@@ -222,25 +180,26 @@ function ListContact() {
                 <div className="friend_request_parent-image">
                     <i className="bi bi-envelope-plus-fill"></i>
                 </div>
+                <div className="friend_request_parent-text">Friend Request</div>
                 <div className="friend_request_parent-length">
                     <Badge
                         className="friend_request_parent-lengthContent"
                         bg="danger"
                     >
-                        {listFriendWait &&
+                        {(listFriendWait &&
                             listFriendWait?.listUser &&
-                            listFriendWait.listUser.length}
+                            listFriendWait.listUser.length) || 0}
                     </Badge>
                 </div>
             </h6>
 
             <div className="ListContact__Child">
                 <div className="ListContact__NodeChild fix_scroll">
-                {listFriendInfo &&
+                    {listFriendInfo &&
                         listFriendInfo.length > 0 &&
                         listFriendInfo.sort(sortName) &&
                         listFriendInfo.map((value, index) => (
-                            <ContactItem key={index} friend={value} />
+                            <ContactItem key={index} friend={value.val} />
                         ))}
                 </div>
             </div>

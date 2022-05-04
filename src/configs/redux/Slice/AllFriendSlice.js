@@ -16,11 +16,13 @@ export const AllFriendSlice = createSlice({
     reducers: {
         add: (state, action) => {
             state.pending = false;
-            // action.payload.forEach((child) => {
-            //     if (state.listFriend.indexOf(child) === -1)
-            //         state.listFriend.push(child);
-            // });
             state.listFriend = action.payload;
+        },
+        remove: (state, action) => {
+            state.pending = false;
+            state.listFriend = state.listFriend.filter((value) => {
+                return value.key !== action.payload.key;
+            });
         },
     },
     extraReducers: (builder) => {

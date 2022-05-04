@@ -24,3 +24,20 @@ export const denyFriend = async (friendUid, currentUserId) => {
         );
     }
 };
+
+export const deleteFriend = async (friendUid, currentUserId) => {
+    const friend = await findExactRecord("users", "uid", friendUid);
+    const value = await findExactRecord("users", "uid", currentUserId);
+    if (value && friend && Array.isArray(value) && Array.isArray(friend)) {
+        await deleteRecord(
+            `users/${value[0].key}/listFriend`,
+            "uid",
+            friendUid
+        );
+        await deleteRecord(
+            `users/${friend[0].key}/listFriend`,
+            "uid",
+            currentUserId
+        );
+    }
+};
