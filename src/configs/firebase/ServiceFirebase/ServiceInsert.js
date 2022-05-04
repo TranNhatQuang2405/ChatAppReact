@@ -1,4 +1,4 @@
-import { addRecord, findExactRecord } from "./service";
+import { addRecord, findExactRecord, deleteRecord } from "./service";
 
 export const addUser = async (user, _tokenResponse) => {
     await addRecord("users/", {
@@ -27,4 +27,25 @@ export const inviteFriend = async (KeyId, friendUid, currentUserId) => {
         });
 };
 
-export const AddFriend = async (userId, currentUserId) => {};
+export const AddFriend = async (friendUid, currentUserId) => {
+    const friend = await findExactRecord("users", "uid", friendUid);
+    const value = await findExactRecord("users", "uid", currentUserId);
+    if (value && friend && Array.isArray(value) && Array.isArray(friend)) {
+        await addRecord(`users/${value[0].key}/listFriend`, {
+            uid: friendUid,
+        });
+        await addRecord(`users/${friend[0].key}/listFriend`, {
+            uid: currentUserId,
+        });
+        await deleteRecord(
+            `users/${friend[0].key}/listWait`,
+            "uid",
+            currentUserId
+        );
+        await deleteRecord(
+            `users/${value[0].key}/listInvite`,
+            "uid",
+            friendUid
+        );
+    }
+};

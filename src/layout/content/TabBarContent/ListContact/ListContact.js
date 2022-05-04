@@ -6,14 +6,17 @@ import {
     FormControl,
     OverlayTrigger,
     Tooltip,
-    Dropdown,
     Modal,
+    Badge,
 } from "react-bootstrap";
-import { Avatar, CardInvite, CardAccept } from "components";
+import { CardInvite, CardAccept } from "components";
 import { useSelector, useDispatch } from "react-redux";
 import { validateUTF8Name } from "configs/Validate";
 import { findFriendToInvite } from "configs/firebase/ServiceFirebase/ServiceFind";
 import { GetAll } from "configs/redux/Slice/ListFriendWaitSlice";
+import useListFriend from "configs/customHook/useListFriend";
+import ContactItem from "./ContactItem";
+import { findUserByUid } from "configs/firebase/ServiceFirebase/ServiceFind";
 import "./ListContact.css";
 
 function ListContact() {
@@ -21,14 +24,65 @@ function ListContact() {
     const localTheme = useSelector((state) => state.LocalTheme.theme);
     const currentUser = useSelector((state) => state.UserInfo.user);
     const listFriendWait = useSelector((state) => state.ListFriendWait);
+    const listFriend = useSelector((state) => state.AllFriend.listFriend);
+    const [listFriendInfo, setListFriendInfo] = useState([]);
     const [show, setShow] = useState(false);
     const [showRequset, setShowRequset] = useState(false);
     const [searchInvite, setSearchInvite] = useState("");
     const [listToInvite, setListToInvite] = useState([]);
+    useListFriend(currentUser.uid);
+
+    const filterListFriend = (val) => {
+        const tmp = listFriendInfo.filter((value) => {
+            return value.uid === val.uid;
+        });
+        if (tmp.length > 0) return false;
+        else return true;
+    };
+
+    const sortName = (a, b) => {
+        if (a.displayName < b.displayName) {
+            return -1;
+        }
+        if (a.displayName > b.displayName) {
+            return 1;
+        }
+        return 0;
+    };
+
+    React.useEffect(() => {
+        let isMounted = true;
+        const handleLoad = async () => {
+            listFriend.forEach(async (uid) => {
+                const get = await findUserByUid(uid);
+                if (isMounted)
+                    if (filterListFriend(get))
+                        setListFriendInfo((prev) => [...prev, get]);
+            });
+        };
+        if (listFriend) handleLoad();
+        return () => {
+            isMounted = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [listFriend]);
 
     const handleChangeSearchInvite = (e) => {
         setSearchInvite(e.target.value);
     };
+
+    useEffect(() => {
+        let isMounted = true;
+        const handleGetData = async () => {
+            if (isMounted) {
+                dispatch(GetAll(currentUser.uid));
+            }
+        };
+        handleGetData();
+        return () => {
+            isMounted = false;
+        };
+    }, [currentUser.uid, dispatch]);
 
     useEffect(() => {
         const GetResult = async () => {
@@ -155,11 +209,7 @@ function ListContact() {
                     {!listFriendWait.pending &&
                         listFriendWait.listUser &&
                         listFriendWait.listUser.map((value) => (
-                            <CardAccept
-                                key={value.key}
-                                keyId={value.key}
-                                uid={value.val.uid}
-                            />
+                            <CardAccept key={value.key} uid={value.val.uid} />
                         ))}
                 </Modal.Body>
             </Modal>
@@ -170,99 +220,26 @@ function ListContact() {
                 <div className="friend_request_parent-image">
                     <i className="bi bi-envelope-plus-fill"></i>
                 </div>
-                <div className="friend_request_parent-text">Friend Request</div>
+                <div className="friend_request_parent-length">
+                    <Badge
+                        className="friend_request_parent-lengthContent"
+                        bg="danger"
+                    >
+                        {listFriendWait &&
+                            listFriendWait?.listUser &&
+                            listFriendWait.listUser.length}
+                    </Badge>
+                </div>
             </h6>
 
             <div className="ListContact__Child">
                 <div className="ListContact__NodeChild fix_scroll">
-                    <div className="listContact__GroupAtoZ">
-                        <div className="listContact__AtoZ">A</div>
-                        <div className="p-2 d-flex cur-pointer listChatContent__child">
-                            <Col lg={2} xs={2} className="align-self-center">
-                                <Avatar width="70%" />
-                            </Col>
-                            <Col
-                                lg={8}
-                                xs={8}
-                                className="align-self-center flex-grow-1"
-                            >
-                                <h5 className="fz-15 text-truncate">
-                                    Trần Nhất Quang
-                                </h5>
-                            </Col>
-                            <Col
-                                lg="auto"
-                                xs="auto"
-                                className="align-self-center"
-                            >
-                                <Dropdown>
-                                    <Dropdown.Toggle
-                                        as="div"
-                                        bsPrefix="listContact__dropdownToggle"
-                                    >
-                                        <i className="bi bi-three-dots-vertical"></i>
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu
-                                        align="end"
-                                        className="text-muted"
-                                    >
-                                        <Dropdown.Item className="listContact__dropdownItem">
-                                            Share
-                                            <i className="bi bi-share float-end text-muted"></i>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item className="listContact__dropdownItem">
-                                            Remove
-                                            <i className="bi bi-trash3-fill float-end text-muted"></i>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Col>
-                        </div>
-                    </div>
-                    <div className="listContact__GroupAtoZ">
-                        <div className="listContact__AtoZ">A</div>
-                        <div className="p-2 d-flex cur-pointer listChatContent__child">
-                            <Col lg={2} xs={2} className="align-self-center">
-                                <Avatar width="70%" />
-                            </Col>
-                            <Col
-                                lg={8}
-                                xs={8}
-                                className="align-self-center flex-grow-1"
-                            >
-                                <h5 className="fz-15 text-truncate">
-                                    Trần Nhất Quang
-                                </h5>
-                            </Col>
-                            <Col
-                                lg="auto"
-                                xs="auto"
-                                className="align-self-center"
-                            >
-                                <Dropdown>
-                                    <Dropdown.Toggle
-                                        as="div"
-                                        bsPrefix="listContact__dropdownToggle"
-                                    >
-                                        <i className="bi bi-three-dots-vertical"></i>
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu
-                                        align="end"
-                                        className="text-muted"
-                                    >
-                                        <Dropdown.Item className="listContact__dropdownItem">
-                                            Share
-                                            <i className="bi bi-share float-end text-muted"></i>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item className="listContact__dropdownItem">
-                                            Remove
-                                            <i className="bi bi-trash3-fill float-end text-muted"></i>
-                                        </Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </Col>
-                        </div>
-                    </div>
+                {listFriendInfo &&
+                        listFriendInfo.length > 0 &&
+                        listFriendInfo.sort(sortName) &&
+                        listFriendInfo.map((value, index) => (
+                            <ContactItem key={index} friend={value} />
+                        ))}
                 </div>
             </div>
         </div>

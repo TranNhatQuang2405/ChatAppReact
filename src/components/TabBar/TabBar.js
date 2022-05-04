@@ -21,7 +21,7 @@ function TabBar() {
   const handleSignOut = async () => {
     const userId = auth.currentUser.uid;
     dispatch(SetIsPending());
-    auth
+    await auth
       .signOut()
       .then(() => {
         updateLogOut(userId);

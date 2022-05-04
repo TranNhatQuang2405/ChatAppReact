@@ -29,3 +29,8 @@
     cursor: pointer;
     background-color: var(--bs-gray-300);
 }
+
+.CardAccept__btn-pending {
+    height: fit-content;
+    align-self: center;
+}

@@ -1,15 +1,49 @@
 import React, { useState, useLayoutEffect } from "react";
 import { Avatar } from "components";
-import User from "image/user.png";
 import { findUserByUid } from "configs/firebase/ServiceFirebase/ServiceFind";
+import { AddFriend } from "configs/firebase/ServiceFirebase/ServiceInsert";
+import { denyFriend } from "configs/firebase/ServiceFirebase/ServiceDelete";
+import { useSelector, useDispatch } from "react-redux";
+import { GetAll } from "configs/redux/Slice/ListFriendWaitSlice";
+
+import User from "image/user.png";
 import "./CardAccept.css";
 
 function CardAccept(props) {
-    const { keyId, uid } = props;
+    const { uid } = props;
+    const dispatch = useDispatch();
+    const [action, setAction] = useState(false);
+    const currentUser = useSelector((state) => state.UserInfo.user);
 
     const [friendWait, setFriendWait] = useState(null);
-    const handleAccept = () => {};
-    const handleDeny = () => {};
+    const handleAccept = async () => {
+        if (action === false) {
+            setAction("pending");
+            await AddFriend(uid, currentUser.uid)
+                .then(() => {
+                    setAction(true);
+                })
+                .catch((e) => {
+                    console.log(e);
+                    setAction(false);
+                });
+            dispatch(GetAll(currentUser.uid));
+        }
+    };
+    const handleDeny = async () => {
+        if (action === false) {
+            setAction("pending");
+            await denyFriend(uid, currentUser.uid)
+                .then(() => {
+                    setAction(true);
+                })
+                .catch((e) => {
+                    console.log(e);
+                    setAction(false);
+                });
+            dispatch(GetAll(currentUser.uid));
+        }
+    };
 
     useLayoutEffect(() => {
         let isMounted = true;
@@ -40,12 +74,28 @@ function CardAccept(props) {
                     <div className="CardAccept__Name">
                         {friendWait.displayName}
                     </div>
-                    <div className="CardAccept__btn" onClick={handleAccept}>
-                        <i className="bi bi-check-circle-fill"></i>
-                    </div>
-                    <div className="CardAccept__btn" onClick={handleDeny}>
-                        <i className="bi bi-x-circle-fill"></i>
-                    </div>
+                    {action === false ? (
+                        <>
+                            <div
+                                className="CardAccept__btn"
+                                onClick={handleAccept}
+                            >
+                                <i className="bi bi-check-circle-fill"></i>
+                            </div>
+                            <div
+                                className="CardAccept__btn"
+                                onClick={handleDeny}
+                            >
+                                <i className="bi bi-x-circle-fill"></i>
+                            </div>
+                        </>
+                    ) : action === "pending" ? (
+                        <div className="rotate CardAccept__btn-pending">
+                            <i className="bi bi-arrow-repeat "></i>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
                 </>
             )}
         </div>

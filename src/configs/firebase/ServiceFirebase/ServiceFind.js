@@ -61,3 +61,19 @@ export const findUserByUid = async (uid) => {
     if (result && result.length > 0) return result[0].val;
     return result;
 };
+
+export const findUserKeyByUid = async (uid) => {
+    const result = await findExactRecord("users", "uid", uid);
+    if (result && result.length > 0) return result[0].key;
+    return result;
+};
+
+export const getAllListFriend = async (uid) => {
+    const listFriend = await findAllChildOfSpecialCollect(
+        "users",
+        "uid",
+        uid,
+        "listFriend"
+    );
+    return listFriend;
+};
