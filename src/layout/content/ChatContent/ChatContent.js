@@ -99,12 +99,13 @@ function ChatContent() {
             <Row className="flex-grow-1 position-relative p-3">
                 <ListMessage />
             </Row>
-            <Row className="top_border p-2 p-lg-3">
+            <Row className="top_border p-2 p-lg-3 chatContent__input-parent">
                 <InputGroup>
                     <FormControl
-                        className="bg-light border-0 seach__text-color chatContent__input"
+                        className="bg-light border-0 seach__text-color chatContent__input fix_scroll"
                         placeholder="Enter Message..."
                         aria-label="Message"
+                        as="textarea"
                     />
                     <Button
                         className="chatContent__button"

@@ -53,6 +53,7 @@
     --bs-input-group-addon-bg: #f5f7fb;
     --bs-input-check-border: var(--bs-input-border);
     --bs-theme-mode-icon: "";
+    --bs-input-card-bg: rgba(230, 235, 245, 0.25);
 }
 
 [data-layout-mode="dark"] {
@@ -131,6 +132,7 @@
     --bs-input-group-addon-bg: #36404a;
     --bs-input-check-border: #3f4a56;
     --bs-theme-mode-icon: "";
+    --bs-input-card-bg: rgba(54, 64, 74, 0.25);
 }
 
 .h1,

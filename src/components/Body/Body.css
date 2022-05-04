@@ -1,0 +1,9 @@
+.body__custom {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    box-sizing: border-box;
+    bottom: 0;
+    height: 100vh;
+    position: relative;
+    margin: 0;
+}

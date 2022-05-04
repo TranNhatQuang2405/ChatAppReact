@@ -1,4 +1,4 @@
-import { addRecord } from "./service";
+import { addRecord, findExactRecord } from "./service";
 
 export const addUser = async (user, _tokenResponse) => {
     await addRecord("users/", {
@@ -19,6 +19,12 @@ export const inviteFriend = async (KeyId, currentUserId) => {
     await addRecord(`users/${KeyId}/listInvite`, {
         uid: currentUserId,
     });
+    const value = await findExactRecord("users", "uid", currentUserId);
+    console.log(value[0].key);
+    if (value && Array.isArray(value))
+        await addRecord(`users/${value[0].key}/listWait`, {
+            uid: KeyId,
+        });
 };
 
 export const unInviteFriend = async (userId, currentUserId) => {

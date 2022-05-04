@@ -10,14 +10,17 @@ import {
     Modal,
 } from "react-bootstrap";
 import { Avatar, CardInvite } from "components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { validateUTF8Name } from "configs/Validate";
 import { findFriendToInvite } from "configs/firebase/ServiceFirebase/ServiceFind";
+import { GetAll } from "configs/redux/Slice/ListFriendWaitSlice";
 import "./ListContact.css";
 
 function ListContact() {
+    const dispatch = useDispatch();
     const localTheme = useSelector((state) => state.LocalTheme.theme);
     const currentUser = useSelector((state) => state.UserInfo.user);
+    const listFriendWait = useSelector((state) => state.ListFriendWait);
     const [show, setShow] = useState(false);
     const [showRequset, setShowRequset] = useState(false);
     const [searchInvite, setSearchInvite] = useState("");
@@ -118,6 +121,7 @@ function ListContact() {
             <Modal
                 show={showRequset}
                 centered
+                onShow={() => dispatch(GetAll(currentUser.uid))}
                 onHide={() => setShowRequset(false)}
                 data-layout-mode={localTheme}
             >
@@ -143,6 +147,11 @@ function ListContact() {
                         />
                     </InputGroup>
                     <h6>List request</h6>
+                    {!listFriendWait.pending &&
+                        listFriendWait.listUser &&
+                        listFriendWait.listUser.map((value, key) => (
+                            <div key={key}>{value.uid}</div>
+                        ))}
                 </Modal.Body>
             </Modal>
             <h6

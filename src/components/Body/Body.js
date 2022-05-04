@@ -7,19 +7,7 @@ function Body({ children }) {
     const localTheme = useSelector((state) => state.LocalTheme.theme);
 
     return (
-        <Container
-            fluid
-            data-layout-mode={localTheme}
-            style={{
-                backgroundColor: "var(--bs-body-bg)",
-                color: "var(--bs-body-color)",
-                boxSizing: "border-box",
-                bottom: 0,
-                height: "100vh",
-                position: "relative",
-                margin: 0,
-            }}
-        >
+        <Container fluid data-layout-mode={localTheme} className="body__custom">
             <Row>{children}</Row>
         </Container>
     );

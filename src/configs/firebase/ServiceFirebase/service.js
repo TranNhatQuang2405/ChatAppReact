@@ -21,6 +21,31 @@ export const addRecord = async (colect, data) => {
     }
 };
 
+export const findAllChildOfSpecialCollect = async (
+    colect,
+    child,
+    value,
+    childGet
+) => {
+    const result = [];
+    const listResult = await findExactRecord(colect, child, value);
+    const tmp = [];
+    listResult.forEach((value) => {
+        tmp.push(value.key);
+    });
+    for (var i = 0; i < tmp.length; ) {
+        const key = tmp[i];
+        const wait = await (async (keyId) => {
+            const resultchild = await findAll(`${colect}/${key}`, childGet);
+            result.push(...resultchild);
+            return 1;
+        })();
+        i = i + wait;
+    }
+
+    return result;
+};
+
 export const findAll = async (colect, child) => {
     let listResult = [];
     const queryGet = query(ref(db, `${colect}/${child}`));
@@ -45,7 +70,8 @@ export const findRecordString = async (colect, child, value) => {
             snapshot.forEach((snapshotChild) => {
                 let key = snapshotChild.key;
                 let val = snapshotChild.val();
-                if (val[child].includes(value)) listResult.push({ key, val });
+                if (val && val[child] && val[child].includes(value))
+                    listResult.push({ key, val });
             });
         })
         .catch((e) => {
@@ -66,8 +92,8 @@ export const findExactRecord = async (colect, child, value) => {
         .then((snapshot) => {
             snapshot.forEach((snapshotChild) => {
                 let key = snapshotChild.key;
-                let value = snapshotChild.val();
-                listResult.push({ key, value });
+                let val = snapshotChild.val();
+                listResult.push({ key, val });
             });
         })
         .catch((e) => {

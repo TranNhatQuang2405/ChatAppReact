@@ -11,6 +11,8 @@ import {
 } from "firebase/auth";
 import { addUser } from "configs/firebase/ServiceFirebase/ServiceInsert";
 import { updateStatus } from "configs/firebase/ServiceFirebase/ServiceUpdate";
+import SignIn from "./SignIn";
+import { Body } from "components";
 
 const providers = {
     google: new GoogleAuthProvider(),
@@ -62,12 +64,9 @@ function LoginPage() {
     if (currentUser === null)
         return (
             <div>
-                <button onClick={() => handleSignIn(providers["google"])}>
-                    Google
-                </button>
-                <button onClick={() => handleSignIn(providers["facebook"])}>
-                    Facebook
-                </button>
+                <Body>
+                    <SignIn handleSignIn={handleSignIn} />
+                </Body>
             </div>
         );
     else return <Navigate to="/MainPage" />;

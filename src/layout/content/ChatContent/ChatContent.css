@@ -33,6 +33,11 @@
     align-items: center;
 }
 
+.chatContent__input-parent {
+    max-height: 400px;
+    height: auto;
+}
+
 .chatContent__input{
     border-radius: 8px !important;
     margin-right: 10px;
