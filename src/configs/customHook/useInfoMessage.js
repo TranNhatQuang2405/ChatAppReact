@@ -2,7 +2,7 @@ import React from "react";
 import { ref, onValue, query, get } from "firebase/database";
 import { db } from "configs/firebase/config";
 import {
-    findUserByUid,
+    findUserAndKeyByUid,
     getAllChildMessage,
 } from "configs/firebase/ServiceFirebase/ServiceFind";
 const sortTime = (a, b) => {
@@ -35,6 +35,7 @@ const useInfoMessage = (key, uid) => {
                     var date = new Date(timeUpdate);
                     var friend = null;
                     var isOnline = true;
+                    var friendKey = null;
                     var time = date.toLocaleTimeString("en-US", {
                         hour12: true,
                         hour: "numeric",
@@ -53,7 +54,10 @@ const useInfoMessage = (key, uid) => {
                         const friendUid = val.listUser.filter(
                             (value) => value !== uid
                         )[0];
-                        friend = await findUserByUid(friendUid);
+                        friend = await findUserAndKeyByUid(friendUid);
+                        friendKey = friend.key;
+                        friend = friend.val;
+                        friend.key = friendKey;
                         name = friend.displayName;
                         photoURL = friend.photoURL;
                     }
@@ -87,6 +91,7 @@ const useInfoMessage = (key, uid) => {
                         key: snapshot.key,
                         isOnline: isOnline,
                         friend: friend,
+                        friendKey: friendKey,
                     }));
                 } else {
                     get(dbRef).then((snapshot) => {

@@ -191,3 +191,30 @@ export const getMessageByFriendUid = async (uid, currentUid) => {
     }
     return key;
 };
+
+export const findUpdateTimeOfMessage = async (key, type, createAt) => {
+    const timeUpdate = await findAllChildOfRecord(
+        "messages",
+        `${key}/timeUpdate`
+    );
+    if (timeUpdate)
+        return {
+            messageId: key,
+            timeUpdate: timeUpdate.val,
+            type: type,
+            createAt: createAt,
+        };
+    else return null;
+};
+
+export const getInitListMessage = async (list) => {
+    var tmp = list.map(
+        async (value) =>
+            await findUpdateTimeOfMessage(
+                value.messageId,
+                value.type,
+                value.createAt
+            )
+    );
+    return Promise.all(tmp);
+};

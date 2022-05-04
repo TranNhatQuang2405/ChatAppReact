@@ -12,6 +12,7 @@ export const SendingSlice = createSlice({
                 list.push({
                     url: action.payload.url,
                     type: action.payload.type,
+                    fileName: action.payload.fileName,
                 });
                 state.data[action.payload.key] = list;
             } else
@@ -23,10 +24,7 @@ export const SendingSlice = createSlice({
             state.data[action.payload.key] = state.data[
                 action.payload.key
             ].filter((value) => {
-                return (
-                    value.url !== action.payload.url &&
-                    value.type !== action.payload.type
-                );
+                return value.url !== action.payload.url;
             });
         },
     },

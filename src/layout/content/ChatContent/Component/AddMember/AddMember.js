@@ -12,6 +12,9 @@ function AddMember({ show, setShow, keyId, uid }) {
     const handleChangeSearchInvite = (e) => {
         setSearch(e.target.value);
     };
+    const handleClose = () => {
+        setSearch("");
+    };
 
     useEffect(() => {
         const GetResult = async () => {
@@ -31,6 +34,7 @@ function AddMember({ show, setShow, keyId, uid }) {
             centered
             onHide={() => {
                 setShow(false);
+                handleClose();
             }}
             data-layout-mode={localTheme}
         >

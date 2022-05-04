@@ -8,7 +8,7 @@ import { show } from "configs/redux/Slice/ShowMessageSlice";
 import { getMessageByFriendUid } from "configs/firebase/ServiceFirebase/ServiceFind";
 
 function ContactItem(props) {
-    const { friend } = props;
+    const { friend, keyId } = props;
     const currentUser = useSelector((state) => state.UserInfo.user);
     const dispatch = useDispatch();
 
@@ -22,7 +22,7 @@ function ContactItem(props) {
             GetCurrentMessage({
                 key: key,
                 typeMessage: 1,
-                friend: friend,
+                friend: { ...friend, key: keyId },
             })
         );
         dispatch(show());

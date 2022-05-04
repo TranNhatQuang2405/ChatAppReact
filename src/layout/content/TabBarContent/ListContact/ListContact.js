@@ -203,7 +203,11 @@ function ListContact() {
                         listFriendInfo.length > 0 &&
                         listFriendInfo.sort(sortName) &&
                         listFriendInfo.map((value, index) => (
-                            <ContactItem key={index} friend={value.val} />
+                            <ContactItem
+                                key={index}
+                                friend={value.val}
+                                keyId={value.key}
+                            />
                         ))}
                 </div>
             </div>

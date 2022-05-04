@@ -1,7 +1,7 @@
 import React from "react";
 import { ref, onValue, query, get } from "firebase/database";
 import { useDispatch } from "react-redux";
-import { clear, setList } from "configs/redux/Slice/ListMessageSlice";
+import { clear, ReInitListMessage } from "configs/redux/Slice/ListMessageSlice";
 import { db } from "configs/firebase/config";
 
 const useListMessage = (key, uid) => {
@@ -17,7 +17,7 @@ const useListMessage = (key, uid) => {
                     snapshot.forEach((childsnapshot) => {
                         list.push(childsnapshot.val());
                     });
-                    dispatch(setList(list));
+                    dispatch(ReInitListMessage(list));
                     
                 } else {
                     get(dbRef).then((snapshot) => {

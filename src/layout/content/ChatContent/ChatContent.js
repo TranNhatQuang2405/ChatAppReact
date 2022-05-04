@@ -1,5 +1,5 @@
 /* eslint-disable no-redeclare */
-import { Avatar } from "components";
+import { Avatar, Confirm } from "components";
 import React, { useState } from "react";
 import BackGround from "image/backgroud.png";
 import {
@@ -42,9 +42,10 @@ function ChatContent() {
     const show = useSelector((state) => state.ShowMessage.value);
     const currentUser = useSelector((state) => state.UserInfo.user);
     const MessageData = useSelector((state) => state.CurrentMessage.data);
-    const IsOnline = useIsOnline(MessageData && MessageData.keyUser);
+    const [IsOnline] = useIsOnline(MessageData && MessageData.keyUser);
     const [showInfo, setShowInfo] = useState(false);
     const [showAddMember, setShowAddMember] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
     const dispatch = useDispatch();
     const [Message, setMessage] = useState({
         message: "",
@@ -54,6 +55,10 @@ function ChatContent() {
     const className_chat = show
         ? "chatContent__body chatContent__body-show"
         : "chatContent__body";
+
+    const handleShowConfirm = () => {
+        setShowConfirm(true);
+    };
 
     const handleLeaveGroup = async () => {
         await leaveGroup(currentUser.key, MessageData.key, currentUser.uid);
@@ -117,6 +122,7 @@ function ChatContent() {
                 for (var i = 0; i < file.length; i++) {
                     var check = checkTypeFile(file[i].name);
                     var url = "";
+                    var fileName = file[i].name;
                     var waitUrl = URL.createObjectURL(file[i]);
                     if (check === 1) {
                         dispatch(add({ key: key, url: waitUrl, type: 1 }));
@@ -129,10 +135,24 @@ function ChatContent() {
                         listImageVideo.push(url);
                         dispatch(remove({ key: key, url: waitUrl, type: 2 }));
                     } else {
-                        dispatch(add({ key: key, url: waitUrl, type: 3 }));
+                        dispatch(
+                            add({
+                                key: key,
+                                url: waitUrl,
+                                type: 3,
+                                fileName: fileName,
+                            })
+                        );
                         url = await uploadFile(file[i]);
                         listFile.push({ url: url, name: file[i].name });
-                        dispatch(remove({ key: key, url: waitUrl, type: 3 }));
+                        dispatch(
+                            remove({
+                                key: key,
+                                url: waitUrl,
+                                type: 3,
+                                fileName: fileName,
+                            })
+                        );
                     }
                 }
                 if (listImageVideo.length > 0) {
@@ -174,22 +194,56 @@ function ChatContent() {
                 for (var i = 0; i < file.length; i++) {
                     var check = checkTypeFile(file[i].name);
                     var url = "";
+                    var fileName = file[i].name;
                     var waitUrl = URL.createObjectURL(file[i]);
                     if (check === 1) {
-                        dispatch(add({ key: key, url: waitUrl, type: 1 }));
+                        dispatch(
+                            add({
+                                key: key,
+                                url: waitUrl,
+                                type: 1,
+                                fileName: fileName,
+                            })
+                        );
                         url = await uploadImage(file[i]);
                         listImageVideo.push(url);
-                        dispatch(remove({ key: key, url: waitUrl, type: 1 }));
+                        dispatch(
+                            remove({
+                                key: key,
+                                url: waitUrl,
+                                type: 1,
+                            })
+                        );
                     } else if (check === 2) {
-                        dispatch(add({ key: key, url: waitUrl, type: 2 }));
+                        dispatch(
+                            add({
+                                key: key,
+                                url: waitUrl,
+                                type: 2,
+                                fileName: fileName,
+                            })
+                        );
                         url = await uploadVideo(file[i]);
                         listImageVideo.push(url);
                         dispatch(remove({ key: key, url: waitUrl, type: 2 }));
                     } else {
-                        dispatch(add({ key: key, url: waitUrl, type: 3 }));
+                        dispatch(
+                            add({
+                                key: key,
+                                url: waitUrl,
+                                type: 3,
+                                fileName: fileName,
+                            })
+                        );
                         url = await uploadFile(file[i]);
                         listFile.push({ url: url, name: file[i].name });
-                        dispatch(remove({ key: key, url: waitUrl, type: 3 }));
+                        dispatch(
+                            remove({
+                                key: key,
+                                url: waitUrl,
+                                type: 3,
+                            })
+                        );
                     }
                 }
 
@@ -283,9 +337,7 @@ function ChatContent() {
                                         width="3.5rem"
                                         url={MessageData.photoURL}
                                         status={
-                                            MessageData.type === 1
-                                                ? IsOnline
-                                                : MessageData.isOnline
+                                            MessageData.type === 1 && IsOnline
                                         }
                                     />
                                 </div>
@@ -511,7 +563,7 @@ function ChatContent() {
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                             className="listContact__dropdownItem ChatContent__dropdownLink"
-                                            onClick={handleLeaveGroup}
+                                            onClick={handleShowConfirm}
                                         >
                                             Leave Group
                                             <i className="bi bi-trash3-fill float-end"></i>
@@ -599,6 +651,14 @@ function ChatContent() {
                     setShow={setShowAddMember}
                     keyId={MessageData.key}
                     uid={currentUser.uid}
+                />
+                <Confirm
+                    show={showConfirm}
+                    handleAccept={handleLeaveGroup}
+                    setShow={setShowConfirm}
+                    handleDeny={() => setShowConfirm(false)}
+                    title="Leave group"
+                    text="Do you want to leave this group ?"
                 />
             </Col>
         );

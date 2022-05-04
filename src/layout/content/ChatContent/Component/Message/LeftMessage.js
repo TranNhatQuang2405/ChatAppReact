@@ -10,13 +10,20 @@ function LeftMessage({ user, value }) {
             url: url,
             method: "GET",
             responseType: "blob", // important
-        }).then((response) => {
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", name);
-            link.click();
-        });
+        })
+            .then((response) => {
+                const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", name);
+                link.style.display = "none";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch((e) => console.log(e));
     };
 
     if (value.type === 1)
@@ -31,13 +38,24 @@ function LeftMessage({ user, value }) {
                             <div className="childMessage">
                                 <span>{tmp.val.title}</span>
                                 <div className="childMessage-hour">
-                                    {new Date(
-                                        tmp.val.createAt
-                                    ).toLocaleTimeString("en-US", {
-                                        hour12: true,
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                    })}
+                                    {new Date(tmp.val.createAt).getDate() ===
+                                    new Date().getDate()
+                                        ? new Date(
+                                              tmp.val.createAt
+                                          ).toLocaleTimeString("en-US", {
+                                              hour12: true,
+                                              hour: "numeric",
+                                              minute: "numeric",
+                                          })
+                                        : new Date(
+                                              tmp.val.createAt
+                                          ).toLocaleTimeString("en-US", {
+                                              hour12: true,
+                                              day: "numeric",
+                                              month: "short",
+                                              hour: "numeric",
+                                              minute: "numeric",
+                                          })}
                                 </div>
                             </div>
                             <div className="messageAction">
@@ -159,13 +177,24 @@ function LeftMessage({ user, value }) {
                                 ></i>
 
                                 <div className="childMessage-hour">
-                                    {new Date(
-                                        tmp.val.createAt
-                                    ).toLocaleTimeString("en-US", {
-                                        hour12: true,
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                    })}
+                                    {new Date(tmp.val.createAt).getDate() ===
+                                    new Date().getDate()
+                                        ? new Date(
+                                              tmp.val.createAt
+                                          ).toLocaleTimeString("en-US", {
+                                              hour12: true,
+                                              hour: "numeric",
+                                              minute: "numeric",
+                                          })
+                                        : new Date(
+                                              tmp.val.createAt
+                                          ).toLocaleTimeString("en-US", {
+                                              hour12: true,
+                                              day: "numeric",
+                                              month: "short",
+                                              hour: "numeric",
+                                              minute: "numeric",
+                                          })}
                                 </div>
                             </div>
                             <div className="messageAction">

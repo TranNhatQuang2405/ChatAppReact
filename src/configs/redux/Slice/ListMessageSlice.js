@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllMessage } from "configs/firebase/ServiceFirebase/ServiceFind";
+import {
+    getAllMessage,
+    getInitListMessage,
+} from "configs/firebase/ServiceFirebase/ServiceFind";
 
 const initialState = {
     listMessage: [],
@@ -15,6 +18,13 @@ export const SetListMessage = createAsyncThunk(
     "ListMessage/setListMessage",
     async (promise) => {
         return promise;
+    }
+);
+
+export const ReInitListMessage = createAsyncThunk(
+    "ListMessage/ReInitListMessage",
+    async (list) => {
+        return await getInitListMessage(list);
     }
 );
 
@@ -46,6 +56,9 @@ export const ListMessageSlice = createSlice({
             state.listFriend = action.payload;
         });
         builder.addCase(SetListMessage.fulfilled, (state, action) => {
+            state.listMessage = action.payload;
+        });
+        builder.addCase(ReInitListMessage.fulfilled, (state, action) => {
             state.listMessage = action.payload;
         });
     },

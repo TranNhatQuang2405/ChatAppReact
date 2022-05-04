@@ -60,7 +60,16 @@ function MessageSending({ user, value }) {
                                                 height={`${WIDTH}%`}
                                             />
                                         );
-                                    } else return <div key={index}>Wait</div>;
+                                    } else
+                                    return (
+                                        <div
+                                            className="childMessage nobackground messageFile"
+                                            key={index}
+                                        >
+                                            <i className="bi bi-file-earmark-text-fill file-icon d-sm-inline d-none"></i>
+                                            <span>{value.fileName}</span>
+                                        </div>
+                                    );
                                 })}
                                 <ProgressBar
                                     variant="success"
