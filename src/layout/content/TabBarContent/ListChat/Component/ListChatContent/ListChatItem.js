@@ -33,7 +33,11 @@ function ListChatItem(props) {
                 className="p-2 d-flex cur-pointer listChatContent__child"
             >
                 <Col lg={2} xs={2} className="align-self-center">
-                    <Avatar width="85%" status={info.isOnline} />
+                    <Avatar
+                        width="85%"
+                        status={info.isOnline}
+                        url={info.photoURL}
+                    />
                 </Col>
                 <Col lg={8} xs={8} className="align-self-center flex-grow-1">
                     <h5 className="fz-15 ps-2 text-truncate">{info.name}</h5>

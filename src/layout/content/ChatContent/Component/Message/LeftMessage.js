@@ -2,8 +2,23 @@ import React, { Suspense } from "react";
 import { Avatar } from "components";
 import { Dropdown, Spinner } from "react-bootstrap";
 import ImageMessage from "./ImageMessage";
+import axios from "axios";
 
 function LeftMessage({ user, value }) {
+    const downloadDriect = (url, name) => {
+        axios({
+            url: url,
+            method: "GET",
+            responseType: "blob", // important
+        }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", name);
+            link.click();
+        });
+    };
+
     if (value.type === 1)
         return (
             <div className="Message__Parent">
@@ -130,8 +145,19 @@ function LeftMessage({ user, value }) {
                 <div className="Message__Content-Left">
                     {value.val.map((tmp) => (
                         <div className="nodeChildMessage" key={tmp.key}>
-                            <div className="childMessage">
-                                <span>{tmp.val.title}</span>
+                            <div className="childMessage nobackground messageFile">
+                                <i className="bi bi-file-earmark-text-fill file-icon d-sm-inline d-none"></i>
+                                <span>{tmp.val.fileName}</span>
+                                <i
+                                    className="bi bi-download file-icon-down"
+                                    onClick={() =>
+                                        downloadDriect(
+                                            tmp.val.urls,
+                                            tmp.val.fileName
+                                        )
+                                    }
+                                ></i>
+
                                 <div className="childMessage-hour">
                                     {new Date(
                                         tmp.val.createAt

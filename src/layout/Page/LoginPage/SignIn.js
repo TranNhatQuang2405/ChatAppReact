@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SignIn.css";
 import Logo from "image/logo.png";
 import {
@@ -12,8 +12,15 @@ import {
     FormCheck,
     FormGroup,
     Button,
+    Alert,
 } from "react-bootstrap";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { change } from "configs/redux/Slice/CurrentPageSlice";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "configs/firebase/config";
+import { validateEmail, validatePassword } from "configs/Validate";
 
 const providers = {
     google: new GoogleAuthProvider(),
@@ -22,18 +29,64 @@ const providers = {
 
 const SignIn = (props) => {
     const { handleSignIn } = props;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [notify, setNotify] = useState(false);
+
+    const [account, setAccount] = useState({
+        email: "",
+        password: "",
+    });
+    const handleResetPass = () => {
+        dispatch(change(3));
+        navigate("/ResetPassword");
+    };
+    const handleSignUp = () => {
+        dispatch(change(2));
+        navigate("/SignUp");
+    };
+
+    const handleChangeEmail = (e) => {
+        setAccount((prev) => ({ ...prev, email: e.target.value }));
+    };
+    const handleChangePass = (e) => {
+        setAccount((prev) => ({ ...prev, password: e.target.value }));
+    };
+
+    const handleLoginWithEmailPassword = (e) => {
+        e.preventDefault();
+        if (account.email.trim() !== "" && account.password.trim() !== "") {
+            if (
+                validateEmail(account.email) &&
+                validatePassword(account.password)
+            ) {
+                signInWithEmailAndPassword(
+                    auth,
+                    account.email.trim(),
+                    account.password.trim()
+                )
+                    .then(async (userCredential) => {
+                        navigate("/MainPage");
+                    })
+                    .catch((error) => {
+                        setNotify(true);
+                    });
+            } else {
+                setNotify(true);
+            }
+        }
+    };
+
     return (
         <div className="SignIn__account-pages pt-3">
             <Row className="justify-content-center">
                 <Col lg={4} xs={11}>
                     <div className="text-center mb-4">
-                        <a href="/Home" className="mb-5">
-                            <img
-                                src={Logo}
-                                alt="Logo"
-                                style={{ width: 120, height: 100 }}
-                            />
-                        </a>
+                        <img
+                            src={Logo}
+                            alt="Logo"
+                            style={{ width: 120, height: 100 }}
+                        />
 
                         <h4 className="SignIn__title">Sign in</h4>
                         <p className="text-muted mb-4">
@@ -42,8 +95,19 @@ const SignIn = (props) => {
                     </div>
 
                     <Card className="SignIn__card">
+                        {notify === true ? (
+                            <Alert
+                                variant="danger"
+                                dismissible
+                                onClose={() => setNotify(false)}
+                            >
+                                Wrong email or password
+                            </Alert>
+                        ) : (
+                            <></>
+                        )}
                         <Card.Body className="p-4">
-                            <Form>
+                            <Form onSubmit={handleLoginWithEmailPassword}>
                                 <FormGroup className="mb-3">
                                     <FormLabel className="SignIn__form-label">
                                         Email
@@ -57,18 +121,20 @@ const SignIn = (props) => {
                                             className="SignIn__form-control SignIn__form-control-lg SignIn__form SignIn__bg-soft-light"
                                             placeholder="Enter Email"
                                             aria-label="Enter Email"
+                                            onChange={handleChangeEmail}
+                                            value={account.email}
                                             required
                                         />
                                     </InputGroup>
                                 </FormGroup>
                                 <FormGroup className="mb-3">
                                     <div className="float-end">
-                                        <a
-                                            href="/Home"
-                                            className="text-muted font-size-13"
+                                        <div
+                                            className="text-muted font-size-13 cur-pointer"
+                                            onClick={handleResetPass}
                                         >
                                             Forgot password?
-                                        </a>
+                                        </div>
                                     </div>
                                     <FormLabel className="SignIn__form-label">
                                         Password
@@ -84,6 +150,8 @@ const SignIn = (props) => {
                                             aria-label="Enter Password"
                                             type="password"
                                             autoComplete="true"
+                                            value={account.password}
+                                            onChange={handleChangePass}
                                             required
                                         />
                                     </InputGroup>
@@ -147,9 +215,12 @@ const SignIn = (props) => {
                     <div className="SignIn__sign-up mt-3 text-center">
                         <p>
                             Don't have an account ?
-                            <a href="/Home" className="ms-1 text-primary">
+                            <span
+                                className="ms-1 text-primary cur-pointer"
+                                onClick={handleSignUp}
+                            >
                                 Signup now
-                            </a>
+                            </span>
                         </p>
                     </div>
                 </Col>

@@ -29,7 +29,7 @@ export const CurrentMessageSlice = createSlice({
     initialState,
     reducers: {
         clear: (state) => {
-            state.listUser = [];
+            state.data = null;
         },
     },
     extraReducers: (builder) => {

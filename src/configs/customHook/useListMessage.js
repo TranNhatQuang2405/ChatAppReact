@@ -3,7 +3,6 @@ import { ref, onValue, query, get } from "firebase/database";
 import { useDispatch } from "react-redux";
 import { clear, setList } from "configs/redux/Slice/ListMessageSlice";
 import { db } from "configs/firebase/config";
-// import { findMessageByKey } from "configs/firebase/ServiceFirebase/ServiceFind";
 
 const useListMessage = (key, uid) => {
     const dispatch = useDispatch();
@@ -19,14 +18,7 @@ const useListMessage = (key, uid) => {
                         list.push(childsnapshot.val());
                     });
                     dispatch(setList(list));
-                    // snapshot.forEach((snapshotchild) => {
-                    //     var val = snapshotchild.val();
-                    //     const result = findMessageByKey(val.messageId);
-                    //     list.push(result);
-                    // });
-
-                    // const re = Promise.all(list);
-                    // dispatch(SetListMessage(re));
+                    
                 } else {
                     get(dbRef).then((snapshot) => {
                         if (!snapshot.exists()) {

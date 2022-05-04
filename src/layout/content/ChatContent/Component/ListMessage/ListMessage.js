@@ -2,10 +2,54 @@ import React, { useEffect, useState } from "react";
 import Message from "../Message/Message";
 import "./ListMessage.css";
 import useListChildMessage from "configs/customHook/useListChildMessage";
+import { useSelector } from "react-redux";
+import MessageSending from "../Message/MessageSending";
+
 function ListMessage(props) {
     const { keyId, uid } = props;
     const [listChild] = useListChildMessage(keyId, uid);
     const [list, setList] = useState([]);
+    const listWaitSend = useSelector((state) => state.Sending.data[keyId]);
+    const currentUser = useSelector((state) => state.UserInfo.user);
+    const [listSendShow, setListSendShow] = useState([]);
+    useEffect(() => {
+        if (listWaitSend && listWaitSend.length > 0) {
+            var ctype = listWaitSend[0].type;
+            var tmp = [];
+            tmp.push(listWaitSend[0]);
+            var tmpTotal = [];
+            for (var i = 1; i < listWaitSend.length; i++) {
+                if (listWaitSend[i].type !== ctype) {
+                    tmp.reverse();
+                    tmpTotal.push({ val: tmp, type: ctype });
+                    tmp = [];
+                    ctype = listWaitSend[i].type;
+                    tmp.push(listWaitSend[i]);
+                    if (i === listWaitSend.length - 1) {
+                        tmp.reverse();
+                        tmpTotal.push({ val: tmp, type: ctype });
+                        tmp = [];
+                    }
+                } else if (i === listWaitSend.length - 1) {
+                    tmp.push(listWaitSend[i]);
+                    tmp.reverse();
+                    tmpTotal.push({ val: tmp, type: ctype });
+                    tmp = [];
+                } else {
+                    tmp.push(listWaitSend[i]);
+                }
+            }
+            if (tmp.length > 0) {
+                tmp.reverse();
+                tmpTotal.push({ val: tmp, type: ctype });
+            }
+            tmpTotal.reverse();
+            setListSendShow(tmpTotal);
+        } else setListSendShow([]);
+
+        return () => {};
+    }, [listWaitSend]);
+
     useEffect(() => {
         if (listChild.length > 0) {
             var cuid = listChild[0].val.uidSend;
@@ -41,7 +85,7 @@ function ListMessage(props) {
             if (tmp.length > 0) {
                 tmp.reverse();
                 tmpTotal.push({ val: tmp, type: ctype, sendUid: cuid });
-            } 
+            }
             setList(tmpTotal);
         } else setList([]);
         return () => {};
@@ -50,6 +94,13 @@ function ListMessage(props) {
     return (
         <div className="ListMessage__parent">
             <div className="ListMessage__listChild fix_scroll">
+                {listSendShow.map((value, index) => (
+                    <MessageSending
+                        key={index}
+                        value={value}
+                        user={currentUser}
+                    />
+                ))}
                 {list.map((value, index) => (
                     <Message key={index} value={value} currentUid={uid} />
                 ))}
@@ -58,4 +109,4 @@ function ListMessage(props) {
     );
 }
 
-export default ListMessage;
+export default React.memo(ListMessage);

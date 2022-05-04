@@ -55,6 +55,7 @@ const useInfoMessage = (key, uid) => {
                         )[0];
                         friend = await findUserByUid(friendUid);
                         name = friend.displayName;
+                        photoURL = friend.photoURL;
                     }
                     if (listChildMessage && listChildMessage.length > 0) {
                         listChildMessage.sort(sortTime);

@@ -4,9 +4,11 @@ import {
     deleteRecord,
     updateSpecialChildRecord,
 } from "./service";
-import { findUserKeyByUid } from "./ServiceFind";
+import { update, ref } from "firebase/database";
+import { findMessageByKey, findUserKeyByUid } from "./ServiceFind";
+import { db } from "../config";
 
-export const addUser = async (user, _tokenResponse) => {
+export const addUser = async (user,) => {
     await addRecord("users/", {
         displayName: user.displayName,
         email: user.email,
@@ -17,7 +19,6 @@ export const addUser = async (user, _tokenResponse) => {
         listChat: null,
         listInvite: null,
         IsOnline: true,
-        providerId: _tokenResponse.providerId,
     });
 };
 
@@ -98,4 +99,18 @@ export const addChildMessage = async (key, type, uid, title, url, fileName) => {
         "timeUpdate",
         cdate.getTime()
     );
+};
+
+export const AddMember = async (keyF, keyM, uidF) => {
+    if (keyF && keyM) {
+        await addRecord(`users/${keyF}/listMessage`, {
+            messageId: keyM,
+            type: 2,
+        });
+        const value = await findMessageByKey(keyM);
+        await update(ref(db, `messages/${keyM}`), {
+            ...value.val,
+            listUser: [...value.val.listUser, uidF],
+        });
+    }
 };

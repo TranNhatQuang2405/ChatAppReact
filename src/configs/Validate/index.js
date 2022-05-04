@@ -10,3 +10,15 @@ export const validateUTF8Name = (text) => {
     if (check && check[0] === text) return true;
     else return false;
 };
+
+export const validateEmail = (email) => {
+    // eslint-disable-next-line no-useless-escape
+    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return regex.test(email);
+};
+
+export const validatePassword = (password) => {
+    const regex =
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+    return regex.test(password);
+};

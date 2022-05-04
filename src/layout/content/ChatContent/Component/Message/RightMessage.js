@@ -1,9 +1,24 @@
 import React, { Suspense } from "react";
 import { Avatar } from "components";
 import { Dropdown, Spinner } from "react-bootstrap";
+import axios from "axios";
 const ImageMessage = React.lazy(() => import("./ImageMessage"));
 
 function RightMessage({ user, value }) {
+    const downloadDriect = (url, name) => {
+        axios({
+            url: url,
+            method: "GET",
+            responseType: "blob", // important
+        }).then((response) => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", name);
+            link.click();
+        });
+    };
+
     if (value.type === 1)
         return (
             <div className="Message__Parent flex-row-reverse">
@@ -113,6 +128,17 @@ function RightMessage({ user, value }) {
                                               minute: "numeric",
                                           })}
                                 </div>
+                                {tmp.showSend === 1 ? (
+                                    <div className="showSend fix-color">
+                                        Sent
+                                    </div>
+                                ) : tmp.showSend === 2 ? (
+                                    <div className="showSend fix-color">
+                                        Seen
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
                             </div>
 
                             <div className="messageAction">
@@ -151,8 +177,18 @@ function RightMessage({ user, value }) {
                 <div className="Message__Content-Right">
                     {value.val.map((tmp) => (
                         <div className="nodeChildMessage-Right" key={tmp.key}>
-                            <div className="childMessage">
-                                <span>{tmp.val.title}</span>
+                            <div className="childMessage nobackground messageFile">
+                                <i className="bi bi-file-earmark-text-fill file-icon d-sm-inline d-none"></i>
+                                <span>{tmp.val.fileName}</span>
+                                <i
+                                    className="bi bi-download file-icon-down"
+                                    onClick={() =>
+                                        downloadDriect(
+                                            tmp.val.urls,
+                                            tmp.val.fileName
+                                        )
+                                    }
+                                ></i>
                                 <div className="d-flex">
                                     <div className="childMessage-hour">
                                         {new Date(

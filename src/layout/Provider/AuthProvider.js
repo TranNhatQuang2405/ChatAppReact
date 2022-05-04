@@ -9,8 +9,9 @@ function AuthProvider({ children }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isLoading = useSelector((state) => state.UserInfo.pending);
+    const currentPage = useSelector((state) => state.CurrentPage.page);
     useLayoutEffect(() => {
-        const unsubscribed = auth.onAuthStateChanged((user) => {
+        const unsubscribed = auth.onAuthStateChanged(async (user) => {
             if (user !== null) {
                 const { uid, displayName, photoURL, email } = user;
                 findUserAndKeyByUid(uid).then((users) => {
@@ -37,13 +38,16 @@ function AuthProvider({ children }) {
                 });
             } else {
                 dispatch(LogOut());
-                navigate("/Login");
+                if (currentPage === 1) navigate("/Login");
+                else if (currentPage === 2) navigate("/SignUp");
+                else if (currentPage === 3) navigate("/ResetPassword");
+                else navigate("/Login");
             }
         });
         return () => {
             unsubscribed();
         };
-    }, [dispatch, navigate]);
+    }, [currentPage, dispatch, navigate]);
     if (isLoading === true) return <LoadingPage />;
     return <>{children}</>;
 }

@@ -6,6 +6,38 @@ import {
     findAll,
 } from "./service";
 
+export const findFriendToAddGroup = async (searchInvite, uid, keyMessge) => {
+    const listCurrentFriend = await findAllChildOfSpecialCollect(
+        "users",
+        "uid",
+        uid,
+        "listFriend"
+    );
+    const listFriend = await findRecordString(
+        "users",
+        "displayName",
+        searchInvite
+    );
+    const listMember = await findAllChildOfRecord(
+        "messages",
+        `${keyMessge}/listUser`
+    );
+    const listUid = [];
+
+    listUid.push(...listCurrentFriend.map((value) => value.val.uid));
+
+    const result = listFriend.filter((friend) => {
+        if (
+            friend.val.uid !== uid &&
+            listUid.indexOf(friend.val.uid) !== -1 &&
+            listMember.val.indexOf(friend.val.uid) === -1
+        )
+            return true;
+        return false;
+    });
+    return result;
+};
+
 export const findFriendToInvite = async (searchInvite, uid) => {
     const listFriend = await findRecordString(
         "users",

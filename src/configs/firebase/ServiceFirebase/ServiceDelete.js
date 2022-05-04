@@ -1,4 +1,7 @@
 import { deleteRecord, findExactRecord } from "./service";
+import { findMessageByKey } from "./ServiceFind";
+import { db } from "../config";
+import { ref, update } from "firebase/database";
 
 export const deleteInvite = async (KeyId, friendUid, currentUserId) => {
     await deleteRecord(`users/${KeyId}/listInvite`, "uid", currentUserId);
@@ -39,5 +42,21 @@ export const deleteFriend = async (friendUid, currentUserId) => {
             "uid",
             currentUserId
         );
+    }
+};
+
+export const leaveGroup = async (keyId, keyMessage, uid) => {
+    if (keyId && keyMessage) {
+        await deleteRecord(
+            `users/${keyId}/listMessage`,
+            "messageId",
+            keyMessage
+        );
+        const value = await findMessageByKey(keyMessage);
+        const list = value.val.listUser.filter((value) => value !== uid);
+        await update(ref(db, `messages/${keyMessage}`), {
+            ...value.val,
+            listUser: [...list],
+        });
     }
 };

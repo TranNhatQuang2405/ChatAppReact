@@ -111,6 +111,10 @@
     align-content: flex-end;
 }
 
+.showSend.fix-color {
+    color: var(--bs-gray-600);
+}
+
 .messageAction {
     color: var(--bs-body-color);
     display: none;
@@ -148,8 +152,30 @@
 }
 
 .messageImage__fit {
-    padding: 3px 10px;
-    border-radius: 10%;
+    padding: 3px 2px;
+    border-radius: 10px;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
+}
+
+.messageFile {
+    color: var(--bs-gray-700) !important;
+    font-weight: 500;
+    font-size: 15px;
+}
+.file-icon {
+    /* color: var(--bs-gray-700) !important; */
+    font-size: large;
+    margin-right: 12px;
+}
+.file-icon-down {
+    margin-left: 12px;
+    font-size: large;
+    cursor: pointer;
+    padding: 3px 6px;
+    border-radius: 10px;
+    color: var(--bs-gray-700) !important;
+}
+.file-icon-down:hover {
+    background-color: var(--bs-gray-100);
 }

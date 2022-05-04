@@ -46,7 +46,7 @@ function LoginPage() {
             if (result) {
                 const { _tokenResponse, user } = result;
                 if (_tokenResponse?.isNewUser) {
-                    addUser(user, _tokenResponse);
+                    addUser(user);
                 } else {
                     updateStatus(user);
                 }

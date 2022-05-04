@@ -6,7 +6,6 @@ import { db } from "configs/firebase/config";
 const useListFriend = (key, uid) => {
     const dispatch = useDispatch();
     React.useEffect(() => {
-        console.log("REE");
 
         let dbRef = ref(db, `users/${key}/listFriend`);
         const unsubscribe = onValue(
