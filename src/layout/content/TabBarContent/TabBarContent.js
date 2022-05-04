@@ -2,6 +2,8 @@ import React from "react";
 import ListChat from "./ListChat";
 import ListGroup from "./ListGroup";
 import ListContact from "./ListContact";
+import UserInfo from "./UserInfo";
+import Setting from "./Setting";
 import { Col, Tab } from "react-bootstrap";
 
 function TabBarContent() {
@@ -15,7 +17,9 @@ function TabBarContent() {
             }}
         >
             <Tab.Content className="position-relative">
-                <Tab.Pane eventKey="profile">Profile</Tab.Pane>
+                <Tab.Pane eventKey="profile">
+                    <UserInfo />
+                </Tab.Pane>
                 <Tab.Pane eventKey="chats">
                     <ListChat />
                 </Tab.Pane>
@@ -25,7 +29,9 @@ function TabBarContent() {
                 <Tab.Pane eventKey="contact">
                     <ListContact />
                 </Tab.Pane>
-                <Tab.Pane eventKey="setting">Setting</Tab.Pane>
+                <Tab.Pane eventKey="setting">
+                    <Setting />
+                </Tab.Pane>
             </Tab.Content>
         </Col>
     );

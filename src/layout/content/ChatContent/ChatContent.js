@@ -111,12 +111,6 @@ function ChatContent() {
                         className="chatContent__button"
                         variant="outline-secondary"
                     >
-                        <i className="bi bi-emoji-smile"></i>
-                    </Button>
-                    <Button
-                        className="chatContent__button"
-                        variant="outline-secondary"
-                    >
                         <i className="bi bi-paperclip"></i>
                     </Button>
                     <Button

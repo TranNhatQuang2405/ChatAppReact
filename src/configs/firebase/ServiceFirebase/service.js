@@ -7,6 +7,7 @@ import {
     orderByChild,
     equalTo,
     get,
+    remove,
 } from "firebase/database";
 import { db } from "configs/firebase/config";
 
@@ -118,6 +119,28 @@ export const updateRecord = async (colect, child, value, data) => {
                     update(ref(db, `${colect}/${key}`), {
                         ...data,
                     });
+                });
+            })
+            .catch((e) => console.log(e));
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const deleteRecord = async (colect, child, value) => {
+    try {
+        const queryGet = query(
+            ref(db, colect),
+            orderByChild(child),
+            equalTo(value)
+        );
+
+        await get(queryGet)
+            .then((snapshot) => {
+                snapshot.forEach((snapshotChild) => {
+                    let key = snapshotChild.key;
+                    // let val = snapshotChild.val();
+                    remove(ref(db, `${colect}/${key}`));
                 });
             })
             .catch((e) => console.log(e));

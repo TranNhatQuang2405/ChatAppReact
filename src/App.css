@@ -351,3 +351,7 @@ Config Accordion
         transform: rotate(360deg);
     }
 }
+
+.header__AccordionItem {
+    background-color: var(--bs-gray-300);
+}

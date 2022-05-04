@@ -38,7 +38,6 @@ export const findFriendToInvite = async (searchInvite, uid) => {
     listUid.push(...listCurrentFriend.map((value) => value.val.uid));
     listUid.push(...listCurrentInvite.map((value) => value.val.uid));
     listUid.push(...listCurrentWait.map((value) => value.val.uid));
-    console.log(listCurrentInvite.map((value) => value.val));
     const result = listFriend.filter((friend) => {
         if (friend.val.uid !== uid && listUid.indexOf(friend.val.uid) === -1)
             return true;

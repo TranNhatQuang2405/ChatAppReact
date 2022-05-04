@@ -1,20 +1,17 @@
 import React, { memo } from "react";
 import { Avatar } from "components";
 import { Accordion } from "react-bootstrap";
-function UserInfo({ showInfo, setShowInfo }) {
+import { useSelector } from "react-redux";
+function UserInfo() {
+    const currentUser = useSelector((state) => state.UserInfo.user);
+
     return (
-        <div className={`ChatContent__userInfo ${showInfo ? "show" : ""}`}>
-            <div
-                className="ChatContent__userInfo-buttonClose"
-                onClick={() => setShowInfo(false)}
-            >
-                <i className="bi bi-x-circle-fill"></i>
-            </div>
+        <div>
             <div className="ChatContent__userInfo-avatar">
-                <Avatar width="5rem" />
-                <div>Trần Nhất Quang</div>
+                <Avatar width="5rem" url={currentUser.photoURL} />
+                <div>{currentUser.displayName}</div>
             </div>
-            <div className="ChatContent__userInfo-body  fix_scroll p-4">
+            <div className="ChatContent__userInfo-body fix_scroll p-4">
                 <Accordion defaultActiveKey="0">
                     <Accordion.Item
                         className="userInfo__AccordionItem"
@@ -31,13 +28,13 @@ function UserInfo({ showInfo, setShowInfo }) {
                                 <div>
                                     <p className="text-muted mb-1">Name</p>
                                     <h6 className="font-size-14">
-                                        Doris Brown
+                                        {currentUser.displayName}
                                     </h6>
                                 </div>
                                 <div className="mt-4">
                                     <p className="text-muted mb-1">Email</p>
                                     <h6 className="font-size-14">
-                                        adc@123.com
+                                        {currentUser.email}
                                     </h6>
                                 </div>
                             </div>

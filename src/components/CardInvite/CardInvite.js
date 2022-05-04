@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Avatar from "components/Avatar";
 import User from "image/user.png";
 import { inviteFriend } from "configs/firebase/ServiceFirebase/ServiceInsert";
+import { deleteInvite } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import { useSelector } from "react-redux";
 import "./CardInvite.css";
 function CardInvite(props) {
@@ -23,7 +24,8 @@ function CardInvite(props) {
                 });
         } else if (invite === true) {
             setInvite("pending");
-            setTimeout(() => setInvite(false), 2000);
+            await deleteInvite(keyId, value.uid, currentUser.uid);
+            setInvite(false);
         }
     };
     
