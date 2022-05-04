@@ -4,6 +4,7 @@ import ShowMessageSlice from './Slice/ShowMessageSlice';
 import UserSlice from "./Slice/UserSlice";
 import ListFriendWaitSlice from "./Slice/ListFriendWaitSlice";
 import AllFriendSlice from "./Slice/AllFriendSlice";
+import AllGroupSlice from "./Slice/AllGroupSlice";
 export const store = configureStore({
     reducer: {
         LocalTheme: ThemeSlice,
@@ -11,5 +12,6 @@ export const store = configureStore({
         UserInfo: UserSlice,
         ListFriendWait: ListFriendWaitSlice,
         AllFriend: AllFriendSlice,
+        AllGroup: AllGroupSlice,
     },
 });

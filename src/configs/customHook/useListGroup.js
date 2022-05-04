@@ -1,18 +1,18 @@
 import React from "react";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, query, orderByChild, equalTo } from "firebase/database";
 import { findUserKeyByUid } from "configs/firebase/ServiceFirebase/ServiceFind";
 import { useDispatch } from "react-redux";
-import { add } from "configs/redux/Slice/AllFriendSlice";
+import { add } from "configs/redux/Slice/AllGroupSlice";
 import { db } from "configs/firebase/config";
 
-const useListFriend = (uid) => {
+const useListGroup = (uid) => {
     const [key, setKey] = React.useState(null);
     const dispatch = useDispatch();
     React.useEffect(() => {
         let isMounted = true;
         const handleLoad = async () => {
-            const friend = await findUserKeyByUid(uid);
-            if (isMounted) setKey(friend);
+            const you = await findUserKeyByUid(uid);
+            if (isMounted) setKey(you);
         };
         if (uid) handleLoad();
         return () => {
@@ -21,13 +21,17 @@ const useListFriend = (uid) => {
     }, [uid]);
 
     React.useEffect(() => {
-        let dbRef = ref(db, `users/${key}/listFriend`);
+        let dbRef = query(
+            ref(db, `users/${key}/listMessage`),
+            orderByChild("type"),
+            equalTo(2)
+        );
         const unsubscribe = onValue(
             dbRef,
             (snapshot) => {
                 const list = [];
                 snapshot.forEach((childSnapshot) => {
-                    list.push(childSnapshot.val().uid);
+                    list.push(childSnapshot.val().messageId);
                 });
                 dispatch(add(list));
             },
@@ -40,4 +44,4 @@ const useListFriend = (uid) => {
     return [true];
 };
 
-export default useListFriend;
+export default useListGroup;

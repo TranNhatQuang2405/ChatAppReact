@@ -29,3 +29,7 @@
         bottom: 52px;
     }
 } 
+
+.input__fileImage {
+    display: none !important;
+}

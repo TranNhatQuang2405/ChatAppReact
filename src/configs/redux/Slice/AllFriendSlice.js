@@ -11,7 +11,7 @@ export const GetAll = createAsyncThunk("AllFriend/getall", async (uid) => {
 });
 
 export const AllFriendSlice = createSlice({
-    name: "User",
+    name: "AllFriend",
     initialState,
     reducers: {
         add: (state, action) => {
@@ -20,10 +20,6 @@ export const AllFriendSlice = createSlice({
                 if (state.listFriend.indexOf(child) === -1)
                     state.listFriend.push(child);
             });
-        },
-        clear: (state) => {
-            state.listUser = null;
-            state.pending = true;
         },
     },
     extraReducers: (builder) => {
@@ -38,6 +34,6 @@ export const AllFriendSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { clear, add } = AllFriendSlice.actions;
+export const { add } = AllFriendSlice.actions;
 
 export default AllFriendSlice.reducer;

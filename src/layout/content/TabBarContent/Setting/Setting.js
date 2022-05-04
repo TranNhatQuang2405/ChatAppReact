@@ -16,11 +16,12 @@ function Setting() {
     const handleSignOut = async () => {
         const userId = auth.currentUser.uid;
         dispatch(SetIsPending());
-        auth.signOut()
-            .then(() => {
-                updateLogOut(userId);
-            })
-            .catch((e) => console.log(e));
+        try {
+            await updateLogOut(userId);
+            await auth.signOut();
+        } catch (e) {
+            console.log(e);
+        }
     };
     return (
         <div className="Setting__body">

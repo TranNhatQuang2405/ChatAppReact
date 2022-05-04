@@ -1,4 +1,5 @@
 import { addRecord, findExactRecord, deleteRecord } from "./service";
+import { findUserKeyByUid } from "./ServiceFind";
 
 export const addUser = async (user, _tokenResponse) => {
     await addRecord("users/", {
@@ -48,4 +49,21 @@ export const AddFriend = async (friendUid, currentUserId) => {
             friendUid
         );
     }
+};
+
+export const addMessage = async (type, name, url, listUser) => {
+    const keyMessage = await addRecord("messages", {
+        type: type,
+        name: name,
+        photoURL: url,
+        listUser: [...listUser],
+        listMessage: [],
+    });
+    listUser.forEach(async (uid) => {
+        const key = await findUserKeyByUid(uid);
+        await addRecord(`users/${key}/listMessage`, {
+            messageId: keyMessage,
+            type: type,
+        });
+    });
 };

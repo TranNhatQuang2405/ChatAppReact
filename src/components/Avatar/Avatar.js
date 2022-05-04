@@ -5,16 +5,17 @@ import image from "image/user.png";
 
 function Avatar(props) {
   const { width, status, url } = props;
+  console.log(url);
   return (
     <div style={{ position: "relative" }} className="cur-pointer">
       <Image
-        src={(url && url) || image}
+        src={url ? url : image}
         alt="Avatar"
         roundedCircle
         style={{
           width: `${width}`,
         }}
-        className="mx-auto"
+        className="mx-auto image-square"
       ></Image>
       {status != null ? (
         <span

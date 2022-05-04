@@ -13,7 +13,7 @@ const useIsOnline = (uid) => {
             const friend = await findUserKeyByUid(uid);
             if (isMounted) setKey(friend);
         };
-        handleLoad();
+        if (uid) handleLoad();
         return () => {
             isMounted = false;
         };

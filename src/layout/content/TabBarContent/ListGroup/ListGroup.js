@@ -1,23 +1,155 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Row,
     Col,
     InputGroup,
     FormControl,
-    Badge,
     OverlayTrigger,
     Tooltip,
     Modal,
     Form,
     Button,
+    Alert,
 } from "react-bootstrap";
 import "./ListGroup.css";
 import { Avatar } from "components";
-import { useSelector } from "react-redux";
+import GroupItem from "./GroupItem";
+import { useSelector, useDispatch } from "react-redux";
+import { addMessage } from "configs/firebase/ServiceFirebase/ServiceInsert";
+import { uploadImage } from "configs/firebase/StorageFirebase";
+import { findMessageByKey } from "configs/firebase/ServiceFirebase/ServiceFind";
+import { GetAll } from "configs/redux/Slice/AllGroupSlice";
+import useListGroup from "configs/customHook/useListGroup";
 
 function ListGroup() {
     const [show, setShow] = useState(false);
     const localTheme = useSelector((state) => state.LocalTheme.theme);
+    const currentUser = useSelector((state) => state.UserInfo.user);
+    const listGroup = useSelector((state) => state.AllGroup.listGroup);
+    const dispatch = useDispatch();
+    const [showDialog, setShowDialog] = useState(false);
+    const [listGroupInfo, setlistGroupInfo] = useState([]);
+    const [alert, setAlert] = useState(false);
+    const [groupCreate, setGroupCreate] = useState({
+        groupName: "",
+        describe: "",
+        image: "",
+        file: null,
+    });
+
+    useListGroup(currentUser.uid);
+    const filterListGroup = (val) => {
+        const tmp = listGroupInfo.filter((value) => {
+            return value.key === val.key;
+        });
+        if (tmp.length > 0) return false;
+        else return true;
+    };
+
+    const handleChangeName = (e) => {
+        var text = e.target.value;
+        setGroupCreate((prev) => {
+            return { ...prev, groupName: text };
+        });
+    };
+
+    const handleChangeDescript = (e) => {
+        var text = e.target.value;
+        setGroupCreate((prev) => {
+            return { ...prev, describe: text };
+        });
+    };
+
+    const handleChangeImage = (e) => {
+        if (e.target.files.length > 0) {
+            setGroupCreate((prev) => {
+                return {
+                    ...prev,
+                    file: e.target.files[0],
+                };
+            });
+            const url = URL.createObjectURL(e.target.files[0]);
+            setGroupCreate((prev) => {
+                return { ...prev, image: url };
+            });
+        }
+    };
+
+    const handleClose = () => {
+        setGroupCreate({ groupName: "", describe: "" });
+        setAlert(false);
+        setShowDialog(false);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        var name = String(groupCreate.groupName).trim();
+        var describe = String(groupCreate.describe).trim();
+        var file = groupCreate.file;
+        if (
+            name === "" ||
+            describe === "" ||
+            name === null ||
+            describe === null
+        ) {
+            setAlert(false);
+            setShowDialog(true);
+        } else {
+            var url = "";
+            if (file !== null && file !== "")
+                url = await uploadImage(file, "demo");
+            if (url === undefined) url = "";
+            addMessage(2, name, url, [currentUser.uid])
+                .then(() => {
+                    setAlert(true);
+                    setShowDialog(true);
+                    setGroupCreate({ groupName: "", describe: "" });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        }
+    };
+
+    const sortNameGroup = (a, b) => {
+        if (a.name < b.name) {
+            return -1;
+        }
+        if (a.name > b.name) {
+            return 1;
+        }
+        return 0;
+    };
+
+    useEffect(() => {
+        let isMounted = true;
+        const handleGetData = async () => {
+            if (isMounted) {
+                dispatch(GetAll(currentUser.uid));
+            }
+        };
+        handleGetData();
+        return () => {
+            isMounted = false;
+        };
+    }, [currentUser.uid, dispatch]);
+
+    useEffect(() => {
+        let isMounted = true;
+        const handleLoad = async () => {
+            listGroup.forEach(async (key) => {
+                const get = await findMessageByKey(key);
+                if (isMounted)
+                    if (filterListGroup(get))
+                        setlistGroupInfo((prev) => [...prev, get]);
+            });
+        };
+        if (listGroup) handleLoad();
+        return () => {
+            isMounted = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [listGroup]);
 
     return (
         <div className="pt-4 px-3 ListGroup__Parent">
@@ -29,46 +161,99 @@ function ListGroup() {
                     <Modal
                         show={show}
                         centered
-                        onHide={() => setShow(false)}
+                        onHide={() => {
+                            setShow(false);
+                            handleClose();
+                        }}
                         data-layout-mode={localTheme}
+                        dialogClassName="listGroup__dialog"
                     >
                         <Modal.Header closeButton className="modal__bg-fix">
                             <h5>Create Group</h5>
                         </Modal.Header>
-                        <Modal.Body className="modal__bg-fix">
-                            <div className="mb-4">
-                                <Form.Label htmlFor="group_name">
-                                    Group Name
-                                </Form.Label>
-                                <InputGroup className="mb-4 rounded-3">
-                                    <FormControl
-                                        className="bg-light border-0 seach__text-color lh-2"
-                                        placeholder="Set name for group"
-                                    />
-                                </InputGroup>
-                            </div>
-                            <div className="mb-4">
-                                <Form.Label htmlFor="group_name">
-                                    Description
-                                </Form.Label>
-                                <InputGroup className="mb-4 rounded-3">
-                                    <FormControl
-                                        as="textarea"
-                                        className="bg-light border-0 seach__text-color lh-2"
-                                        placeholder="Description..."
-                                    />
-                                </InputGroup>
-                            </div>
-                        </Modal.Body>
-                        <Modal.Footer className="modal__bg-fix">
-                            <Button
-                                bsPrefix="btn_color"
-                                onClick={() => setShow(false)}
-                            >
-                                Close
-                            </Button>
-                            <Button bsPrefix="btn_color">Create Group</Button>
-                        </Modal.Footer>
+                        <Form onSubmit={handleSubmit}>
+                            <Modal.Body className="modal__bg-fix">
+                                <div className="mb-4 d-flex flex-column">
+                                    <Form.Label
+                                        htmlFor="imageGroup"
+                                        className="m-auto"
+                                    >
+                                        <Avatar
+                                            width="6rem"
+                                            url={groupCreate.image}
+                                        />
+                                    </Form.Label>
+                                    <InputGroup className="rounded-3">
+                                        <FormControl
+                                            id="imageGroup"
+                                            type="file"
+                                            className="input__fileImage"
+                                            onChange={handleChangeImage}
+                                        ></FormControl>
+                                    </InputGroup>
+                                </div>
+                                <div className="mb-4">
+                                    <Form.Label htmlFor="group_name">
+                                        Group Name
+                                    </Form.Label>
+                                    <InputGroup className="mb-4 rounded-3">
+                                        <FormControl
+                                            className="bg-light border-0 seach__text-color lh-2"
+                                            placeholder="Set name for group"
+                                            value={groupCreate.groupName}
+                                            onChange={handleChangeName}
+                                            minLength={6}
+                                        />
+                                    </InputGroup>
+                                </div>
+                                <div className="mb-4">
+                                    <Form.Label htmlFor="group_name">
+                                        Description
+                                    </Form.Label>
+                                    <InputGroup className="mb-4 rounded-3">
+                                        <FormControl
+                                            as="textarea"
+                                            className="bg-light border-0 seach__text-color lh-2"
+                                            placeholder="Description..."
+                                            value={groupCreate.describe}
+                                            onChange={handleChangeDescript}
+                                            minLength={6}
+                                        />
+                                    </InputGroup>
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer className="modal__bg-fix">
+                                <Button
+                                    bsPrefix="btn_color"
+                                    onClick={() => {
+                                        setShow(false);
+                                        handleClose();
+                                    }}
+                                >
+                                    Close
+                                </Button>
+                                <Button type="submit" bsPrefix="btn_color">
+                                    Create Group
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
+
+                        {showDialog === true &&
+                            (alert === true ? (
+                                <Alert variant="success" className="mb-0">
+                                    <Alert.Heading>Success !!!</Alert.Heading>
+                                </Alert>
+                            ) : (
+                                <Alert
+                                    variant="danger"
+                                    className="mb-0 pt-1 pb-0"
+                                >
+                                    <Alert.Heading>
+                                        Oh snap! You got an error!
+                                    </Alert.Heading>
+                                    <p>Name or description is empty !!!</p>
+                                </Alert>
+                            ))}
                     </Modal>
                     <OverlayTrigger
                         placement="bottom"
@@ -76,7 +261,9 @@ function ListGroup() {
                     >
                         <i
                             className="bi bi-people-fill float-end me-2 cur-pointer"
-                            onClick={() => setShow(true)}
+                            onClick={() => {
+                                setShow(true);
+                            }}
                         ></i>
                     </OverlayTrigger>
                 </Col>
@@ -97,44 +284,16 @@ function ListGroup() {
             </InputGroup>
             <div className="ListGroup__Child">
                 <div className="ListGroup__NodeChild fix_scroll">
-                    <div className="p-2 d-flex cur-pointer listChatContent__child">
-                        <Col lg={2} xs={2} className="align-self-center">
-                            <Avatar width="80%" />
-                        </Col>
-                        <Col
-                            lg={8}
-                            xs={8}
-                            className="align-self-center flex-grow-1"
-                        >
-                            <h5 className="fz-15 ps-2 text-truncate">
-                                Trần Nhất Quang
-                            </h5>
-                        </Col>
-                        <Col lg="auto" xs="auto" className="align-self-center">
-                            <Badge className="float-end" pill bg="danger">
-                                9+
-                            </Badge>
-                        </Col>
-                    </div>
-                    <div className="p-2 d-flex cur-pointer listChatContent__child">
-                        <Col lg={2} xs={2} className="align-self-center">
-                            <Avatar width="80%" />
-                        </Col>
-                        <Col
-                            lg={8}
-                            xs={8}
-                            className="align-self-center flex-grow-1"
-                        >
-                            <h5 className="fz-15 ps-2 text-truncate">
-                                Trần Nhất Quang
-                            </h5>
-                        </Col>
-                        <Col lg="auto" xs="auto" className="align-self-center">
-                            <Badge className="float-end" pill bg="danger">
-                                9+
-                            </Badge>
-                        </Col>
-                    </div>
+                {listGroupInfo &&
+                        listGroupInfo.length > 0 &&
+                        listGroupInfo.sort(sortNameGroup) &&
+                        listGroupInfo.map((value, index) => (
+                            <GroupItem
+                                val={value.val}
+                                key={index}
+                                keyId={value.key}
+                            />
+                        ))}
                 </div>
             </div>
         </div>

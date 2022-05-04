@@ -13,10 +13,11 @@ import { db } from "configs/firebase/config";
 
 export const addRecord = async (colect, data) => {
     try {
-        push(ref(db, colect), {
+        const key = push(ref(db, colect), {
             ...data,
             createAt: serverTimestamp(),
-        });
+        }).then((e) => e.key);
+        return key;
     } catch (error) {
         console.log(error);
     }
@@ -45,6 +46,19 @@ export const findAllChildOfSpecialCollect = async (
     }
 
     return result;
+};
+
+export const findAllChildOfRecord = async (colect, key) => {
+    let listResult = {};
+    const queryGet = query(ref(db, `${colect}/${key}`));
+    await get(queryGet)
+        .then((snapshot) => {
+            let key = snapshot.key;
+            let val = snapshot.val();
+            listResult = { key, val };
+        })
+        .catch((e) => console.log(e));
+    return listResult;
 };
 
 export const findAll = async (colect, child) => {

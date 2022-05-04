@@ -11,7 +11,7 @@ export const GetAll = createAsyncThunk("listFriendWait/getall", async (uid) => {
 });
 
 export const ListFriendWaitSlice = createSlice({
-    name: "User",
+    name: "ListFriendWait",
     initialState,
     reducers: {
         clear: (state) => {

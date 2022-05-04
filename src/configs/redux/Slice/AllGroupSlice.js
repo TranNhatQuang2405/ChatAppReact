@@ -1,0 +1,34 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getAllGroup } from "configs/firebase/ServiceFirebase/ServiceFind";
+
+const initialState = {
+    listGroup: [],
+};
+
+export const GetAll = createAsyncThunk("AllGroup/getall", async (uid) => {
+    return await getAllGroup(uid);
+});
+
+export const AllGroupSlice = createSlice({
+    name: "AllGroup",
+    initialState,
+    reducers: {
+        add: (state, action) => {
+            action.payload.forEach((child) => {
+                if (state.listGroup.indexOf(child) === -1)
+                    state.listGroup.push(child);
+            });
+        },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(GetAll.pending, (state, action) => {});
+        builder.addCase(GetAll.fulfilled, (state, action) => {
+            state.listGroup = action.payload;
+        });
+    },
+});
+
+// Action creators are generated for each case reducer function
+export const { add } = AllGroupSlice.actions;
+
+export default AllGroupSlice.reducer;
