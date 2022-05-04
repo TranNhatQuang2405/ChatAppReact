@@ -2,9 +2,23 @@ import React from "react";
 import { Col } from "react-bootstrap";
 import Avatar from "components/Avatar";
 import useIsOnline from "configs/customHook/useIsOnline";
+import { show } from "configs/redux/Slice/ShowMessageSlice";
+import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
+import { useDispatch } from "react-redux";
 function StatusItem(props) {
-    const { friend } = props;
-    const [isOnline] = useIsOnline(friend.uid);
+    const { keyId, friend } = props;
+    const [isOnline] = useIsOnline(keyId);
+    const dispatch = useDispatch();
+    const handleShow = () => {
+        dispatch(
+            GetCurrentMessage({
+                key: null,
+                typeMessage: 1,
+                friend: friend,
+            })
+        );
+        dispatch(show());
+    };
 
     if (friend)
         return (
@@ -13,9 +27,10 @@ function StatusItem(props) {
                 style={{
                     textAlign: "center",
                 }}
+                onClick={handleShow}
             >
                 <Avatar
-                    width="80%"
+                    width="3.3rem"
                     url={friend?.photoURL && friend.photoURL}
                     status={isOnline}
                 />

@@ -18,11 +18,9 @@ export const AllFriendSlice = createSlice({
             state.pending = false;
             state.listFriend = action.payload;
         },
-        remove: (state, action) => {
+        clear: (state, action) => {
             state.pending = false;
-            state.listFriend = state.listFriend.filter((value) => {
-                return value.key !== action.payload.key;
-            });
+            state.listFriend = [];
         },
     },
     extraReducers: (builder) => {
@@ -37,6 +35,6 @@ export const AllFriendSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { add } = AllFriendSlice.actions;
+export const { add, clear } = AllFriendSlice.actions;
 
 export default AllFriendSlice.reducer;

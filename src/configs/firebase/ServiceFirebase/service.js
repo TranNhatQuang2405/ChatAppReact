@@ -100,15 +100,15 @@ export const findExactRecord = async (colect, child, value) => {
 
     const queryGet = query(
         ref(db, colect),
-        orderByChild(child),
-        equalTo(value)
+        orderByChild(child)
+        // equalTo(value)
     );
     await get(queryGet)
         .then((snapshot) => {
             snapshot.forEach((snapshotChild) => {
                 let key = snapshotChild.key;
                 let val = snapshotChild.val();
-                listResult.push({ key, val });
+                if (val[child] === value) listResult.push({ key, val });
             });
         })
         .catch((e) => {

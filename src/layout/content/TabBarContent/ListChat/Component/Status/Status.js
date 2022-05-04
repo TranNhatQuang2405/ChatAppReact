@@ -16,10 +16,12 @@ function Status() {
         }
         return 0;
     };
+
     useEffect(() => {
         setListFriendInfo([...listFriend]);
         return () => {};
     }, [listFriend]);
+
     const settings = {
         infinite: false,
         centerPadding: "60px",
@@ -55,7 +57,11 @@ function Status() {
                     listFriendInfo.length > 0 &&
                     listFriendInfo.sort(sortOnline) &&
                     listFriendInfo.map((value, index) => (
-                        <StatusItem key={index} friend={value.val} />
+                        <StatusItem
+                            key={index}
+                            keyId={value.key}
+                            friend={value.val}
+                        />
                     ))}
             </Slider>
         </div>

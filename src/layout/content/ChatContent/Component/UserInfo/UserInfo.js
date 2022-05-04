@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Avatar } from "components";
 import { Accordion } from "react-bootstrap";
-function UserInfo({ showInfo, setShowInfo }) {
+function UserInfo({ showInfo, setShowInfo, info }) {
     return (
         <div className={`ChatContent__userInfo ${showInfo ? "show" : ""}`}>
             <div
@@ -11,8 +11,12 @@ function UserInfo({ showInfo, setShowInfo }) {
                 <i className="bi bi-x-circle-fill"></i>
             </div>
             <div className="ChatContent__userInfo-avatar">
-                <Avatar width="5rem" />
-                <div>Trần Nhất Quang</div>
+                <Avatar
+                    width="5rem"
+                    url={info.photoURL}
+                    status={info.isOnline}
+                />
+                <div>{info.name}</div>
             </div>
             <div className="ChatContent__userInfo-body  fix_scroll p-4">
                 <Accordion defaultActiveKey="0">
@@ -31,15 +35,26 @@ function UserInfo({ showInfo, setShowInfo }) {
                                 <div>
                                     <p className="text-muted mb-1">Name</p>
                                     <h6 className="font-size-14">
-                                        Doris Brown
+                                        {info.name}
                                     </h6>
                                 </div>
-                                <div className="mt-4">
-                                    <p className="text-muted mb-1">Email</p>
-                                    <h6 className="font-size-14">
-                                        adc@123.com
-                                    </h6>
-                                </div>
+                                {info.describe ? (
+                                    <div className="mt-4">
+                                        <p className="text-muted mb-1">
+                                            Description
+                                        </p>
+                                        <h6 className="font-size-14">
+                                            {info.describe}
+                                        </h6>
+                                    </div>
+                                ) : (
+                                    <div className="mt-4">
+                                        <p className="text-muted mb-1">Email</p>
+                                        <h6 className="font-size-14">
+                                            {info.email}
+                                        </h6>
+                                    </div>
+                                )}
                             </div>
                         </Accordion.Body>
                     </Accordion.Item>

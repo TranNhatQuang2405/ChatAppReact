@@ -3,7 +3,6 @@ import { getAllListWait } from "configs/firebase/ServiceFirebase/ServiceFind";
 
 const initialState = {
     listUser: [],
-    pending: true,
 };
 
 export const GetAll = createAsyncThunk("listFriendWait/getall", async (uid) => {
@@ -17,16 +16,12 @@ export const ListFriendWaitSlice = createSlice({
         add: (state, action) => {},
         clear: (state) => {
             state.listUser = [];
-            state.pending = true;
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(GetAll.pending, (state, action) => {
-            state.pending = true;
-        });
+        builder.addCase(GetAll.pending, (state, action) => {});
         builder.addCase(GetAll.fulfilled, (state, action) => {
             state.listUser = action.payload;
-            state.pending = false;
         });
     },
 });

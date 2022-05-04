@@ -1,5 +1,6 @@
 .listChatContent__text-color {
     color: var(--bs-gray-600);
+    font-weight: 500;
 }
 
 .listChatContent__child:hover {

@@ -83,7 +83,7 @@ function ListGroup() {
             var url = "";
             if (file !== null && file) url = await uploadImage(file, "demo");
             if (url === undefined) url = "";
-            addMessage(2, name, url, [currentUser.uid])
+            addMessage(2, name, describe, url, [currentUser.uid])
                 .then(() => {
                     setAlert(true);
                     setShowDialog(true);

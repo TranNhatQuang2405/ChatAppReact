@@ -1,34 +1,59 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllListFriend } from "configs/firebase/ServiceFirebase/ServiceFind";
+import { getAllMessage } from "configs/firebase/ServiceFirebase/ServiceFind";
 
 const initialState = {
     listMessage: [],
-    pending: true,
 };
 
 export const GetListMessage = createAsyncThunk(
     "ListMessage/getAllMessage",
     async (uid) => {
-        return await getAllListFriend(uid);
+        return await getAllMessage(uid);
+    }
+);
+export const SetListMessage = createAsyncThunk(
+    "ListMessage/setListMessage",
+    async (promise) => {
+        return promise;
     }
 );
 
-export const MessageSlice = createSlice({
+export const ListMessageSlice = createSlice({
     name: "ListMessage",
     initialState,
-    reducers: {},
+    reducers: {
+        setList: (state, action) => {
+            state.listMessage = action.payload;
+        },
+        clear: (state) => {
+            state.listMessage = [];
+        },
+        updateTime: (state, action) => {
+            var key = action.payload.key;
+            var time = action.payload.timeUpdate;
+            for (var i = 0; i < state.listMessage.length; i++) {
+                if (state.listMessage[i].messageId === key) {
+                    if (state.listMessage[i].timeUpdate !== time) {
+                        state.listMessage[i].timeUpdate = time;
+                        return;
+                    }
+                }
+            }
+        },
+    },
     extraReducers: (builder) => {
-        builder.addCase(GetListMessage.pending, (state, action) => {
-            state.pending = true;
-        });
         builder.addCase(GetListMessage.fulfilled, (state, action) => {
             state.listFriend = action.payload;
-            state.pending = false;
+        });
+        builder.addCase(SetListMessage.fulfilled, (state, action) => {
+            state.listMessage = action.payload;
         });
     },
 });
 
 // Action creators are generated for each case reducer function
 // export const {} = AllFriendSlice.actions;
+export const { clear, setList, updateTime } = ListMessageSlice.actions;
 
-export default MessageSlice.reducer;
+// export default MessageSlice.reducer;
+export default ListMessageSlice.reducer;

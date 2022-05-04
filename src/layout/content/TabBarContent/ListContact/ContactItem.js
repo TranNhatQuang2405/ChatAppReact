@@ -2,17 +2,34 @@ import React from "react";
 import { Avatar } from "components";
 import { Dropdown, Col } from "react-bootstrap";
 import { deleteFriend } from "configs/firebase/ServiceFirebase/ServiceDelete";
-import { useSelector } from "react-redux";
+import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
+import { useSelector, useDispatch } from "react-redux";
+import { show } from "configs/redux/Slice/ShowMessageSlice";
+
 function ContactItem(props) {
     const { friend } = props;
     const currentUser = useSelector((state) => state.UserInfo.user);
+    const dispatch = useDispatch();
 
+    const handleShow = () => {
+        dispatch(
+            GetCurrentMessage({
+                key: null,
+                typeMessage: 1,
+                friend: friend,
+            })
+        );
+        dispatch(show());
+    };
     const handleDelete = async () => {
         await deleteFriend(friend.uid, currentUser.uid);
     };
     if (friend)
         return (
-            <div className="p-2 d-flex cur-pointer listChatContent__child">
+            <div
+                className="p-2 d-flex cur-pointer listChatContent__child"
+                onClick={handleShow}
+            >
                 <Col lg={2} xs={2} className="align-self-center">
                     <Avatar
                         width="70%"

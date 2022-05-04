@@ -14,19 +14,19 @@ import { useSelector } from "react-redux";
 import { validateUTF8Name } from "configs/Validate";
 import { findFriendToInvite } from "configs/firebase/ServiceFirebase/ServiceFind";
 import ContactItem from "./ContactItem";
-import "./listContact.css";
+import "./ListContact.css";
 
 function ListContact() {
     const localTheme = useSelector((state) => state.LocalTheme.theme);
     const currentUser = useSelector((state) => state.UserInfo.user);
     const listFriendWait = useSelector((state) => state.ListFriendWait);
     const listFriend = useSelector((state) => state.AllFriend.listFriend);
+    const [listFriendInfo, setListFriendInfo] = useState(listFriend);
+
     const [show, setShow] = useState(false);
     const [showRequset, setShowRequset] = useState(false);
     const [searchInvite, setSearchInvite] = useState("");
     const [listToInvite, setListToInvite] = useState([]);
-    const [listFriendInfo, setListFriendInfo] = useState(listFriend);
-
     const sortName = (a, b) => {
         if (a.val.displayName < b.val.displayName) {
             return -1;
@@ -36,6 +36,7 @@ function ListContact() {
         }
         return 0;
     };
+
     useEffect(() => {
         setListFriendInfo([...listFriend]);
         return () => {};
@@ -166,10 +167,12 @@ function ListContact() {
                         />
                     </InputGroup>
                     <h6>List request</h6>
-                    {!listFriendWait.pending &&
-                        listFriendWait.listUser &&
+                    {listFriendWait.listUser &&
                         listFriendWait.listUser.map((value) => (
-                            <CardAccept key={value.key} uid={value.val.uid} />
+                            <CardAccept
+                                friendWait={value.val}
+                                key={value.key}
+                            />
                         ))}
                 </Modal.Body>
             </Modal>
@@ -188,7 +191,8 @@ function ListContact() {
                     >
                         {(listFriendWait &&
                             listFriendWait?.listUser &&
-                            listFriendWait.listUser.length) || 0}
+                            listFriendWait.listUser.length) ||
+                            0}
                     </Badge>
                 </div>
             </h6>

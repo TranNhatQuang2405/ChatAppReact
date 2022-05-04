@@ -51,13 +51,17 @@ export const AddFriend = async (friendUid, currentUserId) => {
     }
 };
 
-export const addMessage = async (type, name, url, listUser) => {
+export const addMessage = async (type, name, url, describe, listUser) => {
+    var date = new Date();
+    var utc = date.getTime() + date.getTimezoneOffset() * 60000;
+    var cdate = new Date(utc + 3600000 * 7);
     const keyMessage = await addRecord("messages", {
         type: type,
         name: name,
         photoURL: url,
         listUser: [...listUser],
         listMessage: [],
+        timeUpdate: cdate.getTime(),
     });
     listUser.forEach(async (uid) => {
         const key = await findUserKeyByUid(uid);
