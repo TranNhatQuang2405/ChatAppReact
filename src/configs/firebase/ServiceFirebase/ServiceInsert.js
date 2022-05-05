@@ -122,3 +122,10 @@ export const AddMember = async (keyF, keyM, uidF) => {
         });
     }
 };
+
+export const ReInitMessage = async (keyM, keyU) => {
+    await addRecord(`users/${keyU}/listMessage`, {
+        messageId: keyM,
+        type: 1,
+    });
+};

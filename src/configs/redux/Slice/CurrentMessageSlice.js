@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { findMessageByKey } from "configs/firebase/ServiceFirebase/ServiceFind";
+import {
+    findMessageByKey,
+    getTimeCreatedOfMessage,
+} from "configs/firebase/ServiceFirebase/ServiceFind";
 
 const initialState = {
     data: null,
@@ -7,19 +10,27 @@ const initialState = {
 
 export const GetCurrentMessage = createAsyncThunk(
     "CurrentMessage/getList",
-    async ({ key, typeMessage, friend }) => {
-        if (typeMessage === 1) {
+    async ({ key, typeMessage, friend, keyUid }) => {
+        if (typeMessage === 1 && key) {
             return {
                 val: await findMessageByKey(key),
                 typeMessage: typeMessage,
                 friend: friend,
+                createAt: await getTimeCreatedOfMessage(key, keyUid),
             };
-        }
-        if (typeMessage === 2)
+        } else if (typeMessage === 1) {
+            return {
+                val: await findMessageByKey(key),
+                typeMessage: typeMessage,
+                friend: friend,
+                createAt: 0,
+            };
+        } else if (typeMessage === 2)
             return {
                 val: await findMessageByKey(key),
                 typeMessage: typeMessage,
                 friend: null,
+                createAt: await getTimeCreatedOfMessage(key, keyUid),
             };
     }
 );
@@ -38,6 +49,7 @@ export const CurrentMessageSlice = createSlice({
             const value = action.payload.val;
             const type = action.payload.typeMessage;
             const friend = action.payload.friend;
+            const createAt = action.payload.createAt;
             if (type === 1) {
                 if (value.val) {
                     state.data = {
@@ -53,6 +65,7 @@ export const CurrentMessageSlice = createSlice({
                         describe: null,
                         email: friend.email,
                         isOnline: friend.isOnline,
+                        createAt: createAt,
                     };
                 } else {
                     state.data = {
@@ -68,6 +81,7 @@ export const CurrentMessageSlice = createSlice({
                         email: friend.email,
                         isOnline: friend.isOnline,
                         keyUser: friend.key,
+                        createAt: 0,
                     };
                 }
             }
@@ -82,6 +96,8 @@ export const CurrentMessageSlice = createSlice({
                     timeUpdate: value.val.timeUpdate,
                     describe: value.val.describe,
                     isOnline: true,
+                    createdBy: value.val.createdBy,
+                    createAt: createAt,
                 };
             }
             // state.listUser = action.payload;

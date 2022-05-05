@@ -218,3 +218,28 @@ export const getInitListMessage = async (list) => {
     );
     return Promise.all(tmp);
 };
+
+export const getTimeCreatedOfMessage = async (keyM, keyUid) => {
+    try {
+        var result = await findExactRecord(
+            `users/${keyUid}/listMessage`,
+            "messageId",
+            keyM
+        );
+        if (result && result.length > 0) return result[0].val.createAt;
+        else return new Date().getTime();
+    } catch (e) {
+        return new Date().getTime();
+    }
+};
+
+export const findMessageOfUser = async (keyM, keyUid) => {
+    var result = await findExactRecord(
+        `users/${keyUid}/listMessage`,
+        "messageId",
+        keyM
+    );
+    if (result && result.length > 0 && result[0].key) {
+        return true;
+    } else return false;
+};

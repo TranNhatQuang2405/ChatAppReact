@@ -6,8 +6,8 @@ import { useSelector } from "react-redux";
 import MessageSending from "../Message/MessageSending";
 
 function ListMessage(props) {
-    const { keyId, uid } = props;
-    const [listChild] = useListChildMessage(keyId, uid);
+    const { keyId, uid, createAt } = props;
+    const [listChild] = useListChildMessage(keyId, uid, createAt);
     const [list, setList] = useState([]);
     const listWaitSend = useSelector((state) => state.Sending.data[keyId]);
     const currentUser = useSelector((state) => state.UserInfo.user);

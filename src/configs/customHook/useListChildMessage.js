@@ -7,7 +7,7 @@ const sortTime = (a, b) => {
     else if (a.val.createAt > b.val.createAt) return -1;
     else return 0;
 };
-const useListChildMessage = (key, uid) => {
+const useListChildMessage = (key, uid, createAt) => {
     const [listChild, setListChild] = React.useState([]);
     React.useEffect(() => {
         let dbRef = ref(db, `messages/${key}/listChildMessage`);
@@ -17,11 +17,12 @@ const useListChildMessage = (key, uid) => {
                 await updateListSeen(uid, key);
                 const list = [];
                 snapshot.forEach((dataSnapshot) => {
-                    list.push({
-                        key: dataSnapshot.key,
-                        val: dataSnapshot.val(),
-                        showSend: 0,
-                    });
+                    if (dataSnapshot.val().createAt >= createAt)
+                        list.push({
+                            key: dataSnapshot.key,
+                            val: dataSnapshot.val(),
+                            showSend: 0,
+                        });
                 });
                 if (list.length > 0) {
                     list.sort(sortTime);
@@ -38,7 +39,7 @@ const useListChildMessage = (key, uid) => {
             }
         );
         return unsubscribe;
-    }, [key, uid]);
+    }, [createAt, key, uid]);
     return [listChild];
 };
 

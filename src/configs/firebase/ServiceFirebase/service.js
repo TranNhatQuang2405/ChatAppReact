@@ -1,6 +1,5 @@
 import {
     ref,
-    serverTimestamp,
     push,
     update,
     query,
@@ -15,7 +14,7 @@ export const addRecord = async (colect, data) => {
     try {
         const key = push(ref(db, colect), {
             ...data,
-            createAt: serverTimestamp(),
+            createAt: new Date().getTime(),
         }).then((e) => e.key);
         return key;
     } catch (error) {

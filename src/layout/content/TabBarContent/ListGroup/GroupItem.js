@@ -1,14 +1,22 @@
 import React from "react";
 import { Avatar } from "components";
 import { Col } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { show } from "configs/redux/Slice/ShowMessageSlice";
 import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
 function GroupItem(props) {
     const { keyId, val } = props;
     const dispatch = useDispatch();
+    const currentUser = useSelector((state) => state.UserInfo.user);
+
     const handleShow = () => {
-        dispatch(GetCurrentMessage({ key: keyId, typeMessage: 2 }));
+        dispatch(
+            GetCurrentMessage({
+                key: keyId,
+                typeMessage: 2,
+                keyUid: currentUser.key,
+            })
+        );
         dispatch(show());
     };
     return (

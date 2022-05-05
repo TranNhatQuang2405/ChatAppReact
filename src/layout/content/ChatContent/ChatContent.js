@@ -19,16 +19,19 @@ import "./ChatContent.css";
 import {
     addChildMessage,
     addMessage,
+    ReInitMessage,
 } from "configs/firebase/ServiceFirebase/ServiceInsert";
+import {
+    findUserByUid,
+    getMessageByFriendUid,
+    findMessageOfUser,
+} from "configs/firebase/ServiceFirebase/ServiceFind";
 import useIsOnline from "configs/customHook/useIsOnline";
 import {
     GetCurrentMessage,
     clear,
 } from "configs/redux/Slice/CurrentMessageSlide";
-import {
-    findUserByUid,
-    getMessageByFriendUid,
-} from "configs/firebase/ServiceFirebase/ServiceFind";
+
 import { leaveGroup } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import {
     uploadFile,
@@ -47,29 +50,36 @@ function ChatContent() {
     const [showAddMember, setShowAddMember] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const dispatch = useDispatch();
+
     const [Message, setMessage] = useState({
         message: "",
         file: [],
         ListNameFile: [],
     });
+
     const className_chat = show
         ? "chatContent__body chatContent__body-show"
         : "chatContent__body";
 
+    //Show dialog
     const handleShowConfirm = () => {
         setShowConfirm(true);
     };
 
+    //Rời Group
     const handleLeaveGroup = async () => {
         await leaveGroup(currentUser.key, MessageData.key, currentUser.uid);
         dispatch(invisible());
         dispatch(clear());
     };
 
+    //Lấy đuôi file
     const getExtension = (filename) => {
         var parts = filename.split(".");
         return parts[parts.length - 1];
     };
+
+    //Kiểm tra loại file gửi lên
     const checkTypeFile = (filename) => {
         var ext = getExtension(filename);
         switch (ext.toLowerCase()) {
@@ -89,6 +99,7 @@ function ChatContent() {
         }
     };
 
+    //Send message
     const handleSend = async () => {
         const message = Message.message;
         const file = Message.file;
@@ -104,21 +115,31 @@ function ChatContent() {
                     MessageData.UidFriend,
                     currentUser.uid
                 );
+
                 if (!key)
-                    key = await addMessage(1, null, null, null, [
-                        MessageData.UidFriend,
-                        currentUser.uid,
-                    ]);
+                    key = await addMessage(
+                        1,
+                        null,
+                        null,
+                        null,
+                        [MessageData.UidFriend, currentUser.uid],
+                        currentUser.uid
+                    );
+
                 dispatch(
                     GetCurrentMessage({
                         key: key,
                         typeMessage: 1,
                         friend: await findUserByUid(MessageData.UidFriend),
+                        keyUid: currentUser.key,
                     })
                 );
             }
-            //Gửi message đối với bạn
+            //Check trường hợp bạn xoá tin nhắn
+            const checkM = await findMessageOfUser(key, MessageData.keyUser);
+            if (!checkM) await ReInitMessage(key, MessageData.keyUser);
             if (file.length > 0) {
+                //Gửi message đối với bạn
                 for (var i = 0; i < file.length; i++) {
                     var check = checkTypeFile(file[i].name);
                     var url = "";
@@ -300,10 +321,13 @@ function ChatContent() {
         }));
     };
 
+    //Bắt sự kiện đổi message
     const handleChangeMessage = (e) => {
         const message = e.target.value;
         setMessage((prev) => ({ ...prev, message: message }));
     };
+
+    //Bắt sự kiện đổi file
     const handleChangeFile = (e) => {
         const listFile = e.target.files;
         var ListNameFile = [];
@@ -319,6 +343,7 @@ function ChatContent() {
     };
 
     if (MessageData && MessageData.type === 1) {
+        //Tin nhắn với bạn bè
         return (
             <Col lg className={className_chat}>
                 {/* Body message*/}
@@ -406,6 +431,7 @@ function ChatContent() {
                     <ListMessage
                         keyId={MessageData.key}
                         uid={currentUser.uid}
+                        createAt={MessageData.createAt}
                     />
                 </Row>
                 <Row className="top_border p-2 p-lg-3 chatContent__input-parent">
@@ -477,6 +503,7 @@ function ChatContent() {
             </Col>
         );
     } else if (MessageData && MessageData.type === 2) {
+        //Tin nhắn với group
         return (
             <Col lg className={className_chat}>
                 {/* Body message*/}
@@ -578,6 +605,7 @@ function ChatContent() {
                     <ListMessage
                         keyId={MessageData.key}
                         uid={currentUser.uid}
+                        createAt={MessageData.createAt}
                     />
                 </Row>
                 <Row className="top_border p-2 p-lg-3 chatContent__input-parent">
@@ -662,7 +690,9 @@ function ChatContent() {
                 />
             </Col>
         );
-    } else
+    }
+    //Chưa có tin nhắn
+    else
         return (
             <Col lg className={className_chat}>
                 <Image

@@ -20,6 +20,7 @@ function ListChatItem(props) {
                 key: keyId,
                 typeMessage: type,
                 friend: info.friend,
+                keyUid: currentUser.key,
             })
         );
         dispatch(show());
