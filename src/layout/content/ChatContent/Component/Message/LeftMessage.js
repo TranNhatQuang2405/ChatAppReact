@@ -2,9 +2,16 @@ import React, { Suspense } from "react";
 import { Avatar } from "components";
 import { Dropdown, Spinner } from "react-bootstrap";
 import ImageMessage from "./ImageMessage";
+import { useSelector } from "react-redux";
+import { deleteChileMessage } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import axios from "axios";
 
 function LeftMessage({ user, value }) {
+    const keyM = useSelector((state) => state.CurrentMessage.data.key);
+    const keyU = useSelector((state) => state.UserInfo.user.uid);
+    const handleDeleteMessage = async (keyC) => {
+        await deleteChileMessage(keyM, keyC, keyU);
+    };
     const downloadDriect = (url, name) => {
         axios({
             url: url,
@@ -73,7 +80,12 @@ function LeftMessage({ user, value }) {
                                         <Dropdown.Item className="messageAction__dropdown-item">
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() =>
+                                                handleDeleteMessage(tmp.key)
+                                            }
+                                        >
                                             <i className="bi bi-trash3-fill"></i>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
@@ -142,7 +154,12 @@ function LeftMessage({ user, value }) {
                                         <Dropdown.Item className="messageAction__dropdown-item">
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() =>
+                                                handleDeleteMessage(tmp.key)
+                                            }
+                                        >
                                             <i className="bi bi-trash3-fill"></i>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
@@ -154,7 +171,7 @@ function LeftMessage({ user, value }) {
                 </div>
             </div>
         );
-    } else {
+    } else if (value.type === 3) {
         return (
             <div className="Message__Parent">
                 <div className="d-flex flex-column-reverse">
@@ -212,11 +229,54 @@ function LeftMessage({ user, value }) {
                                         <Dropdown.Item className="messageAction__dropdown-item">
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() =>
+                                                handleDeleteMessage(tmp.key)
+                                            }
+                                        >
                                             <i className="bi bi-trash3-fill"></i>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
+                            </div>
+                        </div>
+                    ))}
+                    <div className="userName">{user.displayName}</div>
+                </div>
+            </div>
+        );
+    } else if (value.type === 4) {
+        return (
+            <div className="Message__Parent">
+                <div className="d-flex flex-column-reverse">
+                    <Avatar width="2rem" url={user.photoURL} />
+                </div>
+                <div className="Message__Content-Left">
+                    {value.val.map((tmp) => (
+                        <div className="nodeChildMessage" key={tmp.key}>
+                            <div className="childMessage nobackground messageFile">
+                                <span>{tmp.val.title}</span>
+                                <div className="childMessage-hour">
+                                    {new Date(tmp.val.createAt).getDate() ===
+                                    new Date().getDate()
+                                        ? new Date(
+                                              tmp.val.createAt
+                                          ).toLocaleTimeString("en-US", {
+                                              hour12: true,
+                                              hour: "numeric",
+                                              minute: "numeric",
+                                          })
+                                        : new Date(
+                                              tmp.val.createAt
+                                          ).toLocaleTimeString("en-US", {
+                                              hour12: true,
+                                              day: "numeric",
+                                              month: "short",
+                                              hour: "numeric",
+                                              minute: "numeric",
+                                          })}
+                                </div>
                             </div>
                         </div>
                     ))}

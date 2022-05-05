@@ -3,7 +3,7 @@ import { Col } from "react-bootstrap";
 import Avatar from "components/Avatar";
 import useIsOnline from "configs/customHook/useIsOnline";
 import { show } from "configs/redux/Slice/ShowMessageSlice";
-import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
+import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessageByFriendUid } from "configs/firebase/ServiceFirebase/ServiceFind";
 

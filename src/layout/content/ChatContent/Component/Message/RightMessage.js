@@ -1,10 +1,15 @@
 import React, { Suspense } from "react";
 import { Avatar } from "components";
 import { Dropdown, Spinner } from "react-bootstrap";
+import { deleteChileMessage } from "configs/firebase/ServiceFirebase/ServiceDelete";
+import { useSelector } from "react-redux";
 import axios from "axios";
 const ImageMessage = React.lazy(() => import("./ImageMessage"));
 
 function RightMessage({ user, value }) {
+    const keyM = useSelector((state) => state.CurrentMessage.data.key);
+    const keyU = useSelector((state) => state.UserInfo.user.uid);
+
     const downloadDriect = (url, name) => {
         axios({
             url: url,
@@ -17,6 +22,10 @@ function RightMessage({ user, value }) {
             link.setAttribute("download", name);
             link.click();
         });
+    };
+
+    const handleDeleteMessage = async (keyC) => {
+        await deleteChileMessage(keyM, keyC, keyU);
     };
 
     if (value.type === 1)
@@ -76,7 +85,12 @@ function RightMessage({ user, value }) {
                                         <Dropdown.Item className="messageAction__dropdown-item">
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() =>
+                                                handleDeleteMessage(tmp.key)
+                                            }
+                                        >
                                             <i className="bi bi-trash3-fill"></i>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
@@ -156,7 +170,12 @@ function RightMessage({ user, value }) {
                                         <Dropdown.Item className="messageAction__dropdown-item">
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() =>
+                                                handleDeleteMessage(tmp.key)
+                                            }
+                                        >
                                             <i className="bi bi-trash3-fill"></i>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
@@ -168,7 +187,7 @@ function RightMessage({ user, value }) {
                 </div>
             </div>
         );
-    else
+    else if (value.type === 3)
         return (
             <div className="Message__Parent flex-row-reverse">
                 <div className="d-flex flex-column-reverse">
@@ -235,7 +254,12 @@ function RightMessage({ user, value }) {
                                         <Dropdown.Item className="messageAction__dropdown-item">
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() =>
+                                                handleDeleteMessage(tmp.key)
+                                            }
+                                        >
                                             <i className="bi bi-trash3-fill"></i>
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
@@ -247,6 +271,48 @@ function RightMessage({ user, value }) {
                 </div>
             </div>
         );
+    else if (value.type === 4) {
+        return (
+            <div className="Message__Parent flex-row-reverse">
+                <div className="d-flex flex-column-reverse">
+                    <Avatar width="2rem" url={user.photoURL} />
+                </div>
+                <div className="Message__Content-Right">
+                    {value.val.map((tmp) => (
+                        <div className="nodeChildMessage-Right" key={tmp.key}>
+                            <div className="childMessage nobackground messageFile">
+                                <span>{tmp.val.title}</span>
+                                <div className="d-flex">
+                                    <div className="childMessage-hour">
+                                        {new Date(
+                                            tmp.val.createAt
+                                        ).getDate() === new Date().getDate()
+                                            ? new Date(
+                                                  tmp.val.createAt
+                                              ).toLocaleTimeString("en-US", {
+                                                  hour12: true,
+                                                  hour: "numeric",
+                                                  minute: "numeric",
+                                              })
+                                            : new Date(
+                                                  tmp.val.createAt
+                                              ).toLocaleTimeString("en-US", {
+                                                  hour12: true,
+                                                  day: "numeric",
+                                                  month: "short",
+                                                  hour: "numeric",
+                                                  minute: "numeric",
+                                              })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    <div className="userName">{user.displayName}</div>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default React.memo(RightMessage);

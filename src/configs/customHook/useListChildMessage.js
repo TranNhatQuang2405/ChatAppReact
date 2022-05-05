@@ -17,12 +17,19 @@ const useListChildMessage = (key, uid, createAt) => {
                 await updateListSeen(uid, key);
                 const list = [];
                 snapshot.forEach((dataSnapshot) => {
-                    if (dataSnapshot.val().createAt >= createAt)
-                        list.push({
-                            key: dataSnapshot.key,
-                            val: dataSnapshot.val(),
-                            showSend: 0,
-                        });
+                    var val = dataSnapshot.val();
+                    if (val.createAt >= createAt)
+                        if (
+                            (val.listDeny &&
+                                Array.isArray(val.listDeny) &&
+                                val.listDeny.indexOf(uid) === -1) ||
+                            (!val.listDeny && true)
+                        )
+                            list.push({
+                                key: dataSnapshot.key,
+                                val: dataSnapshot.val(),
+                                showSend: 0,
+                            });
                 });
                 if (list.length > 0) {
                     list.sort(sortTime);

@@ -11,7 +11,7 @@ import {
 } from "firebase/auth";
 import { addUser } from "configs/firebase/ServiceFirebase/ServiceInsert";
 import { updateStatus } from "configs/firebase/ServiceFirebase/ServiceUpdate";
-import SignIn from "./SignIn";
+import SignIn from "../LoginPage/SignIn";
 import { LogIn } from "configs/redux/Slice/UserSlice";
 import { useDispatch } from "react-redux";
 import { Body } from "components";

@@ -3,7 +3,7 @@ import { Avatar } from "components";
 import { Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { show } from "configs/redux/Slice/ShowMessageSlice";
-import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
+import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlice";
 function GroupItem(props) {
     const { keyId, val } = props;
     const dispatch = useDispatch();

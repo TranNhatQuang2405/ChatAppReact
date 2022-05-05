@@ -11,7 +11,7 @@ import {
     Button,
     Alert,
 } from "react-bootstrap";
-import "./listGroup.css";
+import "./ListGroup.css";
 import { Avatar } from "components";
 import GroupItem from "./GroupItem";
 import { useSelector } from "react-redux";

@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar } from "components";
 import { Dropdown, Col } from "react-bootstrap";
 import { deleteFriend } from "configs/firebase/ServiceFirebase/ServiceDelete";
-import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
+import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { show } from "configs/redux/Slice/ShowMessageSlice";
 import { getMessageByFriendUid } from "configs/firebase/ServiceFirebase/ServiceFind";

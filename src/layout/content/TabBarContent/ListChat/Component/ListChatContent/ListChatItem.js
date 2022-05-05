@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { show } from "configs/redux/Slice/ShowMessageSlice";
 import useInfoMessage from "configs/customHook/useInfoMessage";
 import { updateTime } from "configs/redux/Slice/ListMessageSlice";
-import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlide";
+import { GetCurrentMessage } from "configs/redux/Slice/CurrentMessageSlice";
 import useIsOnline from "configs/customHook/useIsOnline";
 
 function ListChatItem(props) {

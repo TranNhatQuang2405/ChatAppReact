@@ -40,18 +40,6 @@ function UserInfo() {
                             </div>
                         </Accordion.Body>
                     </Accordion.Item>
-                    <Accordion.Item
-                        className="userInfo__AccordionItem"
-                        eventKey="1"
-                    >
-                        <Accordion.Header className="header__AccordionItem">
-                            <h6>
-                                <i className="bi bi-paperclip pe-2 fz-20"></i>
-                                Attached Files
-                            </h6>
-                        </Accordion.Header>
-                        <Accordion.Body></Accordion.Body>
-                    </Accordion.Item>
                 </Accordion>
             </div>
         </div>

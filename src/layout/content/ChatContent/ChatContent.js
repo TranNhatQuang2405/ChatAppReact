@@ -31,7 +31,7 @@ import useIsOnline from "configs/customHook/useIsOnline";
 import {
     GetCurrentMessage,
     clear,
-} from "configs/redux/Slice/CurrentMessageSlide";
+} from "configs/redux/Slice/CurrentMessageSlice";
 
 import { leaveGroup } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import {
@@ -172,6 +172,8 @@ function ChatContent() {
             //Check trường hợp bạn xoá tin nhắn
             const checkM = await findMessageOfUser(key, MessageData.keyUser);
             if (!checkM) await ReInitMessage(key, MessageData.keyUser);
+            const checkC = await findMessageOfUser(key, currentUser.key);
+            if (!checkC) await ReInitMessage(key, currentUser.key);
             if (file.length > 0) {
                 //Gửi message đối với bạn
                 for (var i = 0; i < file.length; i++) {
