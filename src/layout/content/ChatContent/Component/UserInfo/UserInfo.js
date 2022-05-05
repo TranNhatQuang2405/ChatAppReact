@@ -1,8 +1,14 @@
 import React, { memo } from "react";
 import { Avatar } from "components";
 import { Accordion } from "react-bootstrap";
+import useListMember from "configs/customHook/useListMember";
+import useListFile from "configs/customHook/useListFile";
 import CardMember from "./CardMember";
-function UserInfo({ showInfo, setShowInfo, info }) {
+import CardFile from "./CardFile";
+
+function UserInfo({ showInfo, setShowInfo, info, uid }) {
+    const [listMember] = useListMember(info.key);
+    const [listFile] = useListFile(info.key);
     return (
         <div className={`ChatContent__userInfo ${showInfo ? "show" : ""}`}>
             <div
@@ -12,7 +18,7 @@ function UserInfo({ showInfo, setShowInfo, info }) {
                 <i className="bi bi-x-circle-fill"></i>
             </div>
             <div className="ChatContent__userInfo-avatar">
-            <Avatar width="5rem" url={info.photoURL} />
+                <Avatar width="5rem" url={info.photoURL} />
                 <div>{info.name}</div>
             </div>
             <div className="ChatContent__userInfo-body  fix_scroll p-4">
@@ -67,10 +73,16 @@ function UserInfo({ showInfo, setShowInfo, info }) {
                                 </h6>
                             </Accordion.Header>
                             <Accordion.Body>
-                                {info.listUser &&
-                                    info.listUser.length > 0 &&
-                                    info.listUser.map((value, index) => (
-                                        <CardMember key={index} uid={value} />
+                                {listMember &&
+                                    listMember.length > 0 &&
+                                    listMember.map((value, index) => (
+                                        <CardMember
+                                            key={index}
+                                            uid={value}
+                                            isDelete={uid === info.createdBy}
+                                            currentUid={uid}
+                                            keyMessage={info.key}
+                                        />
                                     ))}
                             </Accordion.Body>
                         </Accordion.Item>
@@ -85,7 +97,15 @@ function UserInfo({ showInfo, setShowInfo, info }) {
                                 Attached Files
                             </h6>
                         </Accordion.Header>
-                        <Accordion.Body></Accordion.Body>
+                        <Accordion.Body className="accordion-body">
+                            <div className="ChatContent__userInfo-listFile">
+                                {listFile &&
+                                    listFile.length > 0 &&
+                                    listFile.map((value, index) => (
+                                        <CardFile key={index} url={value.url} />
+                                    ))}
+                            </div>
+                        </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
             </div>

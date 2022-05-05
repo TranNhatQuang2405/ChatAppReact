@@ -26,6 +26,7 @@ import {
     getMessageByFriendUid,
     findMessageOfUser,
 } from "configs/firebase/ServiceFirebase/ServiceFind";
+import { deleteMessage } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import useIsOnline from "configs/customHook/useIsOnline";
 import {
     GetCurrentMessage,
@@ -49,6 +50,7 @@ function ChatContent() {
     const [showInfo, setShowInfo] = useState(false);
     const [showAddMember, setShowAddMember] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [actionConfirm, setActionConfirm] = useState({});
     const dispatch = useDispatch();
 
     const [Message, setMessage] = useState({
@@ -62,7 +64,25 @@ function ChatContent() {
         : "chatContent__body";
 
     //Show dialog
-    const handleShowConfirm = () => {
+    const handleShowConfirm = (actionType) => {
+        console.log(actionType);
+        if (actionType === 1) {
+            setActionConfirm({
+                handleAccept: handleLeaveGroup,
+                setShow: setShowConfirm,
+                handleDeny: () => setShowConfirm(false),
+                title: "Leave group",
+                text: "Do you want to leave this group ?",
+            });
+        } else if (actionType === 2) {
+            setActionConfirm({
+                handleAccept: handleDeleteMessage,
+                setShow: setShowConfirm,
+                handleDeny: () => setShowConfirm(false),
+                title: "Delete message",
+                text: "Do you want to delete this message ?",
+            });
+        }
         setShowConfirm(true);
     };
 
@@ -71,6 +91,20 @@ function ChatContent() {
         await leaveGroup(currentUser.key, MessageData.key, currentUser.uid);
         dispatch(invisible());
         dispatch(clear());
+    };
+
+    //Xoá tin nhắn
+    const handleDeleteMessage = async () => {
+        var key = MessageData.key;
+        var keyUid = currentUser.key;
+        if (key && keyUid) {
+            await deleteMessage(key, keyUid);
+            dispatch(invisible());
+            dispatch(clear());
+        } else {
+            dispatch(invisible());
+            dispatch(clear());
+        }
     };
 
     //Lấy đuôi file
@@ -353,7 +387,10 @@ function ChatContent() {
                             <div className="d-flex align-items-center">
                                 <div
                                     className="d-block d-lg-none me-3 ms-0 cur-pointer"
-                                    onClick={() => dispatch(invisible())}
+                                    onClick={() => {
+                                        dispatch(invisible());
+                                        dispatch(clear());
+                                    }}
                                 >
                                     <i className="bi bi-chevron-left"></i>
                                 </div>
@@ -417,7 +454,10 @@ function ChatContent() {
                                             Muted
                                             <i className="bi bi-bell-slash float-end"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="listContact__dropdownItem ChatContent__dropdownLink">
+                                        <Dropdown.Item
+                                            className="listContact__dropdownItem ChatContent__dropdownLink"
+                                            onClick={() => handleShowConfirm(2)}
+                                        >
                                             Delete
                                             <i className="bi bi-trash3-fill float-end"></i>
                                         </Dropdown.Item>
@@ -499,6 +539,15 @@ function ChatContent() {
                     showInfo={showInfo}
                     setShowInfo={setShowInfo}
                     info={MessageData}
+                    uid={currentUser.uid}
+                />
+                <Confirm
+                    show={showConfirm}
+                    handleAccept={actionConfirm.handleAccept}
+                    setShow={actionConfirm.setShow}
+                    handleDeny={actionConfirm.handleDeny}
+                    title={actionConfirm.title}
+                    text={actionConfirm.text}
                 />
             </Col>
         );
@@ -590,7 +639,7 @@ function ChatContent() {
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                             className="listContact__dropdownItem ChatContent__dropdownLink"
-                                            onClick={handleShowConfirm}
+                                            onClick={() => handleShowConfirm(1)}
                                         >
                                             Leave Group
                                             <i className="bi bi-trash3-fill float-end"></i>
@@ -673,6 +722,7 @@ function ChatContent() {
                     showInfo={showInfo}
                     setShowInfo={setShowInfo}
                     info={MessageData}
+                    uid={currentUser.uid}
                 />
                 <AddMember
                     show={showAddMember}
@@ -682,11 +732,11 @@ function ChatContent() {
                 />
                 <Confirm
                     show={showConfirm}
-                    handleAccept={handleLeaveGroup}
-                    setShow={setShowConfirm}
-                    handleDeny={() => setShowConfirm(false)}
-                    title="Leave group"
-                    text="Do you want to leave this group ?"
+                    handleAccept={actionConfirm.handleAccept}
+                    setShow={actionConfirm.setShow}
+                    handleDeny={actionConfirm.handleDeny}
+                    title={actionConfirm.title}
+                    text={actionConfirm.text}
                 />
             </Col>
         );

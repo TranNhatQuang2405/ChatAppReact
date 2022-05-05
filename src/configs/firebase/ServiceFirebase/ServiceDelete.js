@@ -60,3 +60,9 @@ export const leaveGroup = async (keyId, keyMessage, uid) => {
         });
     }
 };
+
+export const deleteMessage = async (keyM, keyU) => {
+    if (keyM && keyU) {
+        await deleteRecord(`users/${keyU}/listMessage`, "messageId", keyM);
+    }
+};

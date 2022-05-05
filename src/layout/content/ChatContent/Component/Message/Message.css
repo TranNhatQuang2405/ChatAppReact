@@ -179,3 +179,38 @@
 .file-icon-down:hover {
     background-color: var(--bs-gray-100);
 }
+
+.ImageMessage__modal-header {
+    flex-direction: row;
+    background-color: transparent !important;
+    color: var(--bs-gray-500);
+    font-size: x-large;
+    padding: 2px 10px !important;
+    border: none !important;
+}
+.ImageMessage__modal-body {
+    background-color: transparent !important;
+}
+.ImageMessage__modal-body > div > div {
+    background-color: transparent;
+    border: none !important;
+}
+.ImageMessage__modalbtn-download {
+    float: right;
+    text-align: right;
+    padding: 3px 6px;
+    border-radius: 10px;
+}
+.ImageMessage__modalbtn-download:hover {
+    background-color: var(--bs-gray-700);
+    color: var(--bs-gray-100);
+}
+.ImageMessage__modalbtn-cancel {
+    padding: 3px 6px;
+    border-radius: 10px;
+    margin-left: 16px;
+}
+.ImageMessage__modalbtn-cancel:hover {
+    background-color: var(--bs-gray-700);
+    color: var(--bs-gray-100);
+}

@@ -135,6 +135,15 @@
 .ChatContent__userInfo-body:hover {
     color: var(--bs-gray-400);
 }
+
+.ChatContent__userInfo-listFile {
+    display: flex;
+    flex-wrap: wrap;
+    flex-basis: auto;
+    gap: 4px;
+    margin: 0 -5px;
+}
+
 .userInfo__AccordionItem {
     background-color: var(--bs-accordion-bg) !important;
     border: 1px solid var(--bs-border-color)!important;
