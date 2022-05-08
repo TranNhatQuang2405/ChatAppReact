@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/ChatAppReact/static/css/main.c61a5855.css",
+    "main.js": "/ChatAppReact/static/js/main.b1a4cd67.js",
+    "static/js/787.987cdbc8.chunk.js": "/ChatAppReact/static/js/787.987cdbc8.chunk.js",
+    "static/media/backgroud.png": "/ChatAppReact/static/media/backgroud.bc0c0f6f785c2f478f33.png",
+    "static/media/bootstrap-icons.woff?": "/ChatAppReact/static/media/bootstrap-icons.c1d7432ee75fa194e499.woff",
+    "static/media/bootstrap-icons.woff2?": "/ChatAppReact/static/media/bootstrap-icons.a13b815539b49de48d23.woff2",
+    "static/media/logo.png": "/ChatAppReact/static/media/logo.6c0053f58bafda41fc87.png",
+    "static/media/slick.svg": "/ChatAppReact/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/ChatAppReact/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/ChatAppReact/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/slick.woff": "/ChatAppReact/static/media/slick.295183786cd8a1389865.woff",
+    "index.html": "/ChatAppReact/index.html",
+    "main.c61a5855.css.map": "/ChatAppReact/static/css/main.c61a5855.css.map",
+    "main.b1a4cd67.js.map": "/ChatAppReact/static/js/main.b1a4cd67.js.map",
+    "787.987cdbc8.chunk.js.map": "/ChatAppReact/static/js/787.987cdbc8.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c61a5855.css",
+    "static/js/main.b1a4cd67.js"
+  ]
+}
