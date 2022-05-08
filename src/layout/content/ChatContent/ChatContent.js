@@ -1,6 +1,6 @@
 /* eslint-disable no-redeclare */
 import { Avatar, Confirm } from "components";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import BackGround from "image/backgroud.png";
 import {
     Col,
@@ -41,6 +41,8 @@ import {
 } from "configs/firebase/StorageFirebase";
 import { add, remove } from "configs/redux/Slice/SendingSlice";
 import AddMember from "./Component/AddMember/AddMember";
+import { findAllChildOfRecord } from "configs/firebase/ServiceFirebase/service";
+import { SocketContext } from "layout/Provider/Context";
 
 function ChatContent() {
     const show = useSelector((state) => state.ShowMessage.value);
@@ -52,7 +54,7 @@ function ChatContent() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [actionConfirm, setActionConfirm] = useState({});
     const dispatch = useDispatch();
-
+    const { callUser } = useContext(SocketContext);
     const [Message, setMessage] = useState({
         message: "",
         file: [],
@@ -91,6 +93,17 @@ function ChatContent() {
         await leaveGroup(currentUser.key, MessageData.key, currentUser.uid);
         dispatch(invisible());
         dispatch(clear());
+    };
+
+    //Gọi
+    const handleCall = async () => {
+        const serial = await findAllChildOfRecord(
+            `users/${currentUser.keyUser}/`,
+            "serialId"
+        );
+        if (serial.val) {
+            callUser(serial.val, MessageData.name);
+        }
     };
 
     //Xoá tin nhắn
@@ -172,8 +185,10 @@ function ChatContent() {
             //Check trường hợp bạn xoá tin nhắn
             const checkM = await findMessageOfUser(key, MessageData.keyUser);
             if (!checkM) await ReInitMessage(key, MessageData.keyUser);
+
             const checkC = await findMessageOfUser(key, currentUser.key);
             if (!checkC) await ReInitMessage(key, currentUser.key);
+
             if (file.length > 0) {
                 //Gửi message đối với bạn
                 for (var i = 0; i < file.length; i++) {
@@ -419,7 +434,10 @@ function ChatContent() {
                                 <i className="bi bi-telephone-fill"></i>
                             </div>
                             <div className="ChatContent__icon d-none d-lg-flex">
-                                <i className="bi bi-camera-video-fill"></i>
+                                <i
+                                    className="bi bi-camera-video-fill"
+                                    onClick={handleCall}
+                                ></i>
                             </div>
                             <div
                                 className="ChatContent__icon d-none d-lg-flex"
@@ -439,9 +457,12 @@ function ChatContent() {
                                         align="end"
                                         className="text-muted ChatContent__dropdown-background"
                                     >
-                                        <Dropdown.Item className="listContact__dropdownItem d-lg-none d-block ChatContent__dropdownLink">
+                                        <Dropdown.Item
+                                            className="listContact__dropdownItem d-lg-none d-block ChatContent__dropdownLink"
+                                            onClick={handleCall}
+                                        >
                                             Call
-                                            <i className="bi bi-telephone-fill float-end"></i>
+                                            <i className="bi bi-camera-video-fill float-end"></i>
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                             className="listContact__dropdownItem d-lg-none d-block ChatContent__dropdownLink"
@@ -589,12 +610,6 @@ function ChatContent() {
                     </Col>
                     <Col>
                         <div className="d-flex h-100 align-items-center float-end pe-3">
-                            <div className="ChatContent__icon d-none d-lg-flex">
-                                <i className="bi bi-telephone-fill"></i>
-                            </div>
-                            <div className="ChatContent__icon d-none d-lg-flex">
-                                <i className="bi bi-camera-video-fill"></i>
-                            </div>
                             <div
                                 className="ChatContent__icon d-none d-lg-flex"
                                 onClick={() => setShowInfo(true)}
@@ -613,10 +628,6 @@ function ChatContent() {
                                         align="end"
                                         className="text-muted ChatContent__dropdown-background"
                                     >
-                                        <Dropdown.Item className="listContact__dropdownItem d-lg-none d-block ChatContent__dropdownLink">
-                                            Call
-                                            <i className="bi bi-telephone-fill float-end"></i>
-                                        </Dropdown.Item>
                                         <Dropdown.Item
                                             className="listContact__dropdownItem d-lg-none d-block ChatContent__dropdownLink"
                                             onClick={() => {

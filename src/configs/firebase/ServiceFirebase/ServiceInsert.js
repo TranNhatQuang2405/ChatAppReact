@@ -4,7 +4,7 @@ import {
     deleteRecord,
     updateSpecialChildRecord,
 } from "./service";
-import { update, ref } from "firebase/database";
+import { update, ref, set } from "firebase/database";
 import { findMessageByKey, findUserKeyByUid } from "./ServiceFind";
 import { db } from "../config";
 
@@ -128,4 +128,8 @@ export const ReInitMessage = async (keyM, keyU) => {
         messageId: keyM,
         type: 1,
     });
+};
+
+export const UpdateSerialId = async (id, keyU) => {
+    await set(ref(db, `users/${keyU}/serialId`), id);
 };
