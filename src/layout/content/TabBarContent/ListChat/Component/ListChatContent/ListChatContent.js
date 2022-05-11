@@ -4,7 +4,7 @@ import "./ListChatContent.css";
 import { useSelector } from "react-redux";
 import ListChatItem from "./ListChatItem";
 
-function ListChatContent() {
+function ListChatContent({ filter }) {
     const listMessage = useSelector((state) => state.ListMessage.listMessage);
     const [listMessageSort, setListMessageSort] = useState(listMessage);
     const sortTime = (a, b) => {
@@ -31,6 +31,7 @@ function ListChatContent() {
                     listMessageSort.sort(sortTime) &&
                     listMessageSort.map((value, index) => (
                         <ListChatItem
+                            filter={filter}
                             key={index}
                             keyId={value.messageId}
                             type={value.type}

@@ -16,6 +16,7 @@ function ListMessage(props) {
     const [listSendShow, setListSendShow] = useState([]);
     const [numNewMessage, setNumNewMessage] = useState(null);
     const [play] = useSound(MessageSound);
+    const sound = useSelector((state) => state.Sound.sound);
 
     useEffect(() => {
         if (listWaitSend && listWaitSend.length > 0) {
@@ -100,7 +101,13 @@ function ListMessage(props) {
             }
             setList(tmpTotal);
         } else setList([]);
-        if (tmpCountNew && numNewMessage && numNewMessage < tmpCountNew) play();
+        if (
+            tmpCountNew &&
+            numNewMessage &&
+            numNewMessage < tmpCountNew &&
+            sound
+        )
+            play();
         setNumNewMessage(tmpCountNew);
         return () => {};
     }, [listChild]);

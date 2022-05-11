@@ -8,9 +8,16 @@ import { show } from "configs/redux/Slice/ShowMessageSlice";
 import { getMessageByFriendUid } from "configs/firebase/ServiceFirebase/ServiceFind";
 
 function ContactItem(props) {
-    const { friend, keyId } = props;
+    const { friend, keyId, filter } = props;
     const currentUser = useSelector((state) => state.UserInfo.user);
     const dispatch = useDispatch();
+
+    const check = (value) => {
+        var tmp = String(value).trim().toUpperCase();
+        var tmp2 = String(filter).trim().toUpperCase();
+        if (tmp.indexOf(tmp2) !== -1) return true;
+        return false;
+    };
 
     const handleDropdown = (e) => {
         e.stopPropagation();
@@ -30,7 +37,7 @@ function ContactItem(props) {
     const handleDelete = async () => {
         await deleteFriend(friend.uid, currentUser.uid);
     };
-    if (friend)
+    if (friend && check(friend.displayName))
         return (
             <div
                 className="p-2 d-flex cur-pointer listChatContent__child"

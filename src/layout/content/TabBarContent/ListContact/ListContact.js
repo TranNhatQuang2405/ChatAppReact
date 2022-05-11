@@ -22,11 +22,21 @@ function ListContact() {
     const listFriendWait = useSelector((state) => state.ListFriendWait);
     const listFriend = useSelector((state) => state.AllFriend.listFriend);
     const [listFriendInfo, setListFriendInfo] = useState(listFriend);
-
     const [show, setShow] = useState(false);
     const [showRequset, setShowRequset] = useState(false);
     const [searchInvite, setSearchInvite] = useState("");
     const [listToInvite, setListToInvite] = useState([]);
+    const [filter, setFilter] = useState("");
+    const [filterWait, setFilterWait] = useState("");
+    const handleChange = (e) => {
+        var text = String(e.target.value);
+        setFilter(text);
+    };
+
+    const handleChangeWait = (e) => {
+        var text = String(e.target.value);
+        setFilterWait(text);
+    };
     const sortName = (a, b) => {
         if (a.val.displayName < b.val.displayName) {
             return -1;
@@ -134,6 +144,8 @@ function ListContact() {
                     placeholder="Search users..."
                     aria-label="Search users..."
                     aria-describedby="basic-addon1"
+                    value={filter}
+                    onChange={handleChange}
                 />
             </InputGroup>
             {/* Show friend invite */}
@@ -142,6 +154,7 @@ function ListContact() {
                 centered
                 onHide={() => {
                     setShowRequset(false);
+                    setFilterWait("");
                 }}
                 data-layout-mode={localTheme}
             >
@@ -164,12 +177,15 @@ function ListContact() {
                             placeholder="Search users..."
                             aria-label="Search users..."
                             aria-describedby="basic-addon1"
+                            value={filterWait}
+                            onChange={handleChangeWait}
                         />
                     </InputGroup>
                     <h6>List request</h6>
                     {listFriendWait.listUser &&
                         listFriendWait.listUser.map((value) => (
                             <CardAccept
+                                filter={filterWait}
                                 friendWait={value.val}
                                 key={value.key}
                             />
@@ -204,6 +220,7 @@ function ListContact() {
                         listFriendInfo.sort(sortName) &&
                         listFriendInfo.map((value, index) => (
                             <ContactItem
+                                filter={filter}
                                 key={index}
                                 friend={value.val}
                                 keyId={value.key}

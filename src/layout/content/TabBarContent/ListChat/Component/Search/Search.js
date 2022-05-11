@@ -2,7 +2,11 @@ import React from "react";
 import { FormControl } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import "./Search.css";
-function Search() {
+function Search({ setFilter, filter }) {
+    const handleChange = (e) => {
+        var text = String(e.target.value);
+        setFilter(text);
+    };
     return (
         <div className="pt-4 px-3">
             <h4 className="mb-4">Chats</h4>
@@ -18,6 +22,8 @@ function Search() {
                     placeholder="Search messages or users"
                     aria-label="Search messages or users"
                     aria-describedby="basic-addon1"
+                    value={filter}
+                    onChange={handleChange}
                 />
             </InputGroup>
         </div>

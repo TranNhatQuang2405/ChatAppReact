@@ -26,12 +26,19 @@ function ListGroup() {
     const [showDialog, setShowDialog] = useState(false);
     const [listGroupInfo, setlistGroupInfo] = useState(listGroup);
     const [alert, setAlert] = useState(false);
+    const [filter, setFilter] = useState("");
+
     const [groupCreate, setGroupCreate] = useState({
         groupName: "",
         describe: "",
         image: "",
         file: null,
     });
+
+    const handleChange = (e) => {
+        var text = String(e.target.value);
+        setFilter(text);
+    };
 
     const handleChangeName = (e) => {
         var text = e.target.value;
@@ -245,6 +252,8 @@ function ListGroup() {
                     placeholder="Search Groups..."
                     aria-label="Search Groups..."
                     aria-describedby="basic-addon1"
+                    value={filter}
+                    onChange={handleChange}
                 />
             </InputGroup>
             <div className="ListGroup__Child">
@@ -254,6 +263,7 @@ function ListGroup() {
                         listGroupInfo.sort(sortNameGroup) &&
                         listGroupInfo.map((value, index) => (
                             <GroupItem
+                                filter={filter}
                                 val={value.val}
                                 key={index}
                                 keyId={value.key}

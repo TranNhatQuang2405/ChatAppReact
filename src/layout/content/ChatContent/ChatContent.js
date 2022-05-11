@@ -26,6 +26,7 @@ import {
     getMessageByFriendUid,
     findMessageOfUser,
 } from "configs/firebase/ServiceFirebase/ServiceFind";
+import { updateSoundMessage } from "configs/firebase/ServiceFirebase/ServiceUpdate";
 import { deleteMessage } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import useIsOnline from "configs/customHook/useIsOnline";
 import {
@@ -60,6 +61,10 @@ function ChatContent() {
         file: [],
         ListNameFile: [],
     });
+
+    const handleChangeStatus = async () => {
+        await updateSoundMessage(currentUser.key, MessageData.key);
+    };
 
     const className_chat = show
         ? "chatContent__body chatContent__body-show"
@@ -98,7 +103,7 @@ function ChatContent() {
     //Gọi
     const handleCall = async () => {
         const serial = await findAllChildOfRecord(
-            `users/${currentUser.keyUser}/`,
+            `users/${MessageData.keyUser}/`,
             "serialId"
         );
         if (serial.val) {
@@ -473,7 +478,10 @@ function ChatContent() {
                                             Info
                                             <i className="bi bi-person float-end"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="listContact__dropdownItem ChatContent__dropdownLink">
+                                        <Dropdown.Item
+                                            className="listContact__dropdownItem ChatContent__dropdownLink"
+                                            onClick={handleChangeStatus}
+                                        >
                                             Muted
                                             <i className="bi bi-bell-slash float-end"></i>
                                         </Dropdown.Item>
@@ -637,7 +645,10 @@ function ChatContent() {
                                             Info
                                             <i className="bi bi-person float-end"></i>
                                         </Dropdown.Item>
-                                        <Dropdown.Item className="listContact__dropdownItem ChatContent__dropdownLink">
+                                        <Dropdown.Item
+                                            className="listContact__dropdownItem ChatContent__dropdownLink"
+                                            onClick={handleChangeStatus}
+                                        >
                                             Muted
                                             <i className="bi bi-bell-slash float-end"></i>
                                         </Dropdown.Item>

@@ -1,5 +1,5 @@
 import { update, ref, set } from "firebase/database";
-import { updateRecord } from "./service";
+import { findExactRecord, updateRecord } from "./service";
 import { getAllChildMessage } from "./ServiceFind";
 import { db } from "../config";
 
@@ -36,5 +36,26 @@ export const updateInfoUser = async (keyId, displayName, photoURL) => {
             await set(ref(db, `users/${keyId}/displayName`), displayName);
         if (photoURL && photoURL !== "")
             await set(ref(db, `users/${keyId}/photoURL`), photoURL);
+    }
+};
+
+export const updateSoundMessage = async (keyU, keyM) => {
+    if (keyU && keyM) {
+        const message = await findExactRecord(
+            `users/${keyU}/listMessage`,
+            "messageId",
+            keyM
+        );
+        if (message && message.length > 0 && message[0].key) {
+            var status =
+                message[0].val.status === undefined ||
+                message[0].val.status === true
+                    ? false
+                    : true;
+            await set(
+                ref(db, `users/${keyU}/listMessage/${message[0].key}/status`),
+                status
+            );
+        }
     }
 };

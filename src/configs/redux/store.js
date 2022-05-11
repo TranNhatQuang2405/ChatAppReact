@@ -10,6 +10,7 @@ import CurrentMessageSlice from "./Slice/CurrentMessageSlice";
 import SendingSlice from "./Slice/SendingSlice";
 import CurrentPageSlice from "./Slice/CurrentPageSlice";
 import CurrentMethodSlice from "./Slice/CurrentMethodSlice";
+import SoundSlice from "./Slice/SoundSlice";
 
 export const store = configureStore({
     reducer: {
@@ -24,5 +25,6 @@ export const store = configureStore({
         Sending: SendingSlice,
         CurrentPage: CurrentPageSlice,
         CurrentMethod: CurrentMethodSlice,
+        Sound: SoundSlice,
     },
 });

@@ -6,11 +6,14 @@ import { SetIsPending } from "configs/redux/Slice/UserSlice";
 import { auth } from "configs/firebase/config";
 import { updateLogOut } from "configs/firebase/ServiceFirebase/ServiceUpdate";
 import { change } from "configs/redux/Slice/ThemeSlice";
+import { changeSound } from "configs/redux/Slice/SoundSlice";
 import "./Setting.css";
 
 function Setting() {
     const currentUser = useSelector((state) => state.UserInfo.user);
     const localTheme = useSelector((state) => state.LocalTheme.theme);
+    const sound = useSelector((state) => state.Sound.sound);
+
     const dispatch = useDispatch();
 
     const handleSignOut = async () => {
@@ -26,7 +29,7 @@ function Setting() {
     return (
         <div className="Setting__body">
             <div className="ChatContent__userInfo-avatar">
-                <Avatar width="5rem" url={currentUser.photoURL}/>
+                <Avatar width="5rem" url={currentUser.photoURL} />
                 <div className="mt-2">{currentUser.displayName}</div>
             </div>
             <div className="ChatContent__userInfo-body fix_scroll p-4">
@@ -49,6 +52,8 @@ function Setting() {
                                         type="switch"
                                         id="switch_sound"
                                         label="Notification Sound"
+                                        checked={sound}
+                                        onChange={() => dispatch(changeSound())}
                                     />
                                     <Form.Check
                                         checked={
@@ -58,6 +63,7 @@ function Setting() {
                                         type="switch"
                                         id="switch_theme"
                                         label="Dark Mode"
+                                        className="mt-3"
                                     />
                                     <Form.Label />
                                 </Form>
