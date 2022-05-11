@@ -8,8 +8,8 @@ import {
 const sortTime = (a, b) => {
     a = a.val;
     b = b.val;
-    if (a.createAt > b.createAt) return 1;
-    else if (a.createAt < b.createAt) return -1;
+    if (a.createAt < b.createAt) return 1;
+    else if (a.createAt > b.createAt) return -1;
     else return 0;
 };
 

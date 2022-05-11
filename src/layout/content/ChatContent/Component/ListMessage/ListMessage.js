@@ -4,6 +4,8 @@ import "./ListMessage.css";
 import useListChildMessage from "configs/customHook/useListChildMessage";
 import { useSelector } from "react-redux";
 import MessageSending from "../Message/MessageSending";
+import useSound from "use-sound";
+import MessageSound from "sound/message.mp3";
 
 function ListMessage(props) {
     const { keyId, uid, createAt } = props;
@@ -12,6 +14,8 @@ function ListMessage(props) {
     const listWaitSend = useSelector((state) => state.Sending.data[keyId]);
     const currentUser = useSelector((state) => state.UserInfo.user);
     const [listSendShow, setListSendShow] = useState([]);
+    const [numNewMessage, setNumNewMessage] = useState(null);
+    const [play] = useSound(MessageSound);
     useEffect(() => {
         if (listWaitSend && listWaitSend.length > 0) {
             var ctype = listWaitSend[0].type;
