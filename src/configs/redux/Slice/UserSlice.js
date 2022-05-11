@@ -27,6 +27,13 @@ export const UserSlice = createSlice({
         SetIsPending: (state) => {
             state.pending = true;
         },
+        Update: (state, action) => {
+            state.user = {
+                ...state.user,
+                displayName: action.payload.displayName,
+                photoURL: action.payload.photoURL,
+            };
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(Login.pending, (state, action) => {
@@ -45,6 +52,6 @@ export const UserSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { LogIn, LogOut, SetIsPending } = UserSlice.actions;
+export const { LogIn, LogOut, SetIsPending, Update } = UserSlice.actions;
 
 export default UserSlice.reducer;

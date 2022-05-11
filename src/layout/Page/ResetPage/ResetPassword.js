@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "image/logo.png";
 import {
     Col,
@@ -16,14 +16,36 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { change } from "configs/redux/Slice/CurrentPageSlice";
 import { Body } from "components";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "configs/firebase/config";
+import { validateEmail } from "configs/Validate";
 
 const ResetPassword = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
+    const [email, setEmail] = useState("");
+    const [alert, setAlert] = useState(null);
+    const handleChangeEmail = (e) => {
+        var stringEmail = e.target.value;
+        setEmail(stringEmail);
+    };
     const handleSignIn = () => {
         dispatch(change(1));
         navigate("/Login");
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validateEmail(email)) {
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    setAlert(true);
+                })
+                .catch((error) => {
+                    setAlert(false);
+                });
+        } else {
+            setAlert(false);
+        }
     };
 
     return (
@@ -47,14 +69,32 @@ const ResetPassword = () => {
                         <Card className="ResetPassword__card mt-2">
                             <Card.Body className="p-4">
                                 <div className="p-3">
-                                    <div
-                                        className="alert alert-success text-center mb-4"
-                                        role="alert"
-                                    >
-                                        Enter your Email and instructions will
-                                        be sent to you!
-                                    </div>
-                                    <Form action="index.html">
+                                    {alert === null ? (
+                                        <div
+                                            className="alert alert-success text-center mb-4"
+                                            role="alert"
+                                        >
+                                            Enter your Email and instructions
+                                            will be sent to you!
+                                        </div>
+                                    ) : alert === true ? (
+                                        <div
+                                            className="alert alert-success text-center mb-4"
+                                            role="alert"
+                                        >
+                                            Reset password link have been sent
+                                            to your email
+                                        </div>
+                                    ) : (
+                                        <div
+                                            className="alert alert-danger text-center mb-4"
+                                            role="alert"
+                                        >
+                                            Email your submit is wrong
+                                        </div>
+                                    )}
+
+                                    <Form onSubmit={handleSubmit}>
                                         <FormGroup className="mb-4">
                                             <FormLabel className="ResetPassword__form-label">
                                                 Email
@@ -69,6 +109,8 @@ const ResetPassword = () => {
                                                     placeholder="Enter Email"
                                                     aria-label="Enter Email"
                                                     required
+                                                    value={email}
+                                                    onChange={handleChangeEmail}
                                                 />
                                             </InputGroup>
                                         </FormGroup>

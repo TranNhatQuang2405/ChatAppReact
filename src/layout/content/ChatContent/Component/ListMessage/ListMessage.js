@@ -16,6 +16,7 @@ function ListMessage(props) {
     const [listSendShow, setListSendShow] = useState([]);
     const [numNewMessage, setNumNewMessage] = useState(null);
     const [play] = useSound(MessageSound);
+
     useEffect(() => {
         if (listWaitSend && listWaitSend.length > 0) {
             var ctype = listWaitSend[0].type;
@@ -55,13 +56,20 @@ function ListMessage(props) {
     }, [listWaitSend]);
 
     useEffect(() => {
+        var tmpCountNew = 0;
         if (listChild.length > 0) {
             var cuid = listChild[0].val.uidSend;
+            if (cuid !== currentUser.uid) {
+                tmpCountNew = 1;
+            }
+
             var ctype = listChild[0].val.type;
             var tmp = [];
             tmp.push(listChild[0]);
             var tmpTotal = [];
             for (var i = 1; i < listChild.length; i++) {
+                if (listChild[i].val.uidSend !== currentUser.uid)
+                    tmpCountNew += 1;
                 if (
                     listChild[i].val.uidSend !== cuid ||
                     listChild[i].val.type !== ctype
@@ -92,6 +100,8 @@ function ListMessage(props) {
             }
             setList(tmpTotal);
         } else setList([]);
+        if (tmpCountNew && numNewMessage && numNewMessage < tmpCountNew) play();
+        setNumNewMessage(tmpCountNew);
         return () => {};
     }, [listChild]);
 

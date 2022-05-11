@@ -76,9 +76,7 @@ const useInfoMessage = (key, uid) => {
                                 NewMessage++;
                             }
                         }
-                        LastMessage =
-                            listChildMessage[listChildMessage.length - 1].val
-                                .title;
+                        LastMessage = listChildMessage[0].val.title;
                     }
                     setInfo((prev) => ({
                         ...prev,

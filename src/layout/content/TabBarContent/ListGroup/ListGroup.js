@@ -81,7 +81,7 @@ function ListGroup() {
             setShowDialog(true);
         } else {
             var url = "";
-            if (file !== null && file) url = await uploadImage(file, "demo");
+            if (file !== null && file) url = await uploadImage(file);
             if (url === undefined) url = "";
             addMessage(
                 2,

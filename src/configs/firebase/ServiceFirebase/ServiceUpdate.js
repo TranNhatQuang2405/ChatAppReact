@@ -1,4 +1,4 @@
-import { update, ref } from "firebase/database";
+import { update, ref, set } from "firebase/database";
 import { updateRecord } from "./service";
 import { getAllChildMessage } from "./ServiceFind";
 import { db } from "../config";
@@ -28,4 +28,13 @@ export const updateListSeen = async (userId, key) => {
             );
         }
     });
+};
+
+export const updateInfoUser = async (keyId, displayName, photoURL) => {
+    if (keyId) {
+        if (displayName && displayName !== "")
+            await set(ref(db, `users/${keyId}/displayName`), displayName);
+        if (photoURL && photoURL !== "")
+            await set(ref(db, `users/${keyId}/photoURL`), photoURL);
+    }
 };
