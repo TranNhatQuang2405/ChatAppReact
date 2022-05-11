@@ -10,7 +10,7 @@
     background-repeat: no-repeat;
     background-size: auto;
     background-position: center;
-    height: 80vh;
+    height: 70vh;
     border-radius: 10px;
 }
 .my__video {
@@ -33,7 +33,7 @@
         max-width: 50%;
     }
     .videoCall__parent {
-        height: 90vh;
+        height: 80vh;
     }
 }
 

@@ -7,7 +7,7 @@ import { UpdateSerialId } from "configs/firebase/ServiceFirebase/ServiceInsert";
 const SocketContext = createContext();
 
 // const socket = io('http://localhost:5000');
-const socket = io("https://appchatvideo.herokuapp.com/");
+const socket = io("https://videocallchatappserve.herokuapp.com/");
 
 const ContextProvider = ({ children }) => {
     const user = useSelector((state) => state.UserInfo.user);
@@ -18,12 +18,19 @@ const ContextProvider = ({ children }) => {
     const [name, setName] = useState("");
     const [call, setCall] = useState({});
     const [me, setMe] = useState("");
-    // const [show, setShow] = useState(false);
-    // const [voice, setVoice] = useState(false);
     const [isCalling, setIsCalling] = useState(false);
+
+    const [userName, setUserName] = useState("");
+    const [otherUser, setOtherUser] = useState("");
+    const [myVdoStatus, setMyVdoStatus] = useState(true);
+    const [userVdoStatus, setUserVdoStatus] = useState();
+    const [myMicStatus, setMyMicStatus] = useState(true);
+    const [userMicStatus, setUserMicStatus] = useState();
+
     const myVideo = useRef();
     const userVideo = useRef();
     const connectionRef = useRef();
+
     useEffect(() => {
         socket.on("me", (id) => setMe(id));
         socket.on("callUser", ({ from, name: callerName, signal }) => {
@@ -36,6 +43,26 @@ const ContextProvider = ({ children }) => {
                 signal,
             });
         });
+        socket.on("endCall", () => {
+            window.location.reload();
+        });
+
+        socket.on("updateUserMedia", ({ type, currentMediaStatus }) => {
+            if (currentMediaStatus !== null || currentMediaStatus !== []) {
+                switch (type) {
+                    case "video":
+                        setUserVdoStatus(currentMediaStatus);
+                        break;
+                    case "mic":
+                        setUserMicStatus(currentMediaStatus);
+                        break;
+                    default:
+                        setUserMicStatus(currentMediaStatus[0]);
+                        setUserVdoStatus(currentMediaStatus[1]);
+                        break;
+                }
+            }
+        });
     }, [user]);
     useEffect(() => {
         const update = async () => {
@@ -45,74 +72,38 @@ const ContextProvider = ({ children }) => {
         return () => {};
     }, [me, user]);
 
-    // useEffect(() => {
-    //     if (show) startVideo();
-    //     else stopVideo();
-    //     return () => {};
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [show]);
-
-    // useEffect(() => {
-    //     if (voice) startVoive();
-    //     else stopVoice();
-    //     return () => {};
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [voice]);
-
-    // const handleShowCam = () => {
-    //     setShow((show) => !show);
-    // };
-
-    // const handleShowVoice = () => {
-    //     setVoice((voice) => !voice);
-    // };
-
-    const stopVoice = () => {
-        setStream((stream) => {
-            if (stream) {
-                var tmpStream = stream;
-                tmpStream.getAudioTracks().forEach(function (track) {
-                    track.stop();
+    const updateVideo = () => {
+        if (stream)
+            setMyVdoStatus((currentStatus) => {
+                socket.emit("updateMyMedia", {
+                    type: "video",
+                    currentMediaStatus: !currentStatus,
                 });
-                return tmpStream;
-            } else return null;
-        });
+                stream.getVideoTracks()[0].enabled = !currentStatus;
+                return !currentStatus;
+            });
     };
-    // const startVoive = () => {
-    //     navigator.mediaDevices
-    //         .getUserMedia({ video: show, audio: true })
-    //         .then((currentStream) => {
-    //             setStream(currentStream);
-    //             myVideo.current.srcObject = currentStream;
-    //         });
-    // };
 
-    const stopVideo = () => {
-        setStream((stream) => {
-            if (stream) {
-                var tmpStream = stream;
-                tmpStream.getVideoTracks().forEach(function (track) {
-                    track.stop();
+    const updateMic = () => {
+        if (stream)
+            setMyMicStatus((currentStatus) => {
+                socket.emit("updateMyMedia", {
+                    type: "mic",
+                    currentMediaStatus: !currentStatus,
                 });
-                if (connectionRef.current) return tmpStream;
-            } else return null;
-        });
+                stream.getAudioTracks()[0].enabled = !currentStatus;
+                return !currentStatus;
+            });
     };
-    // const startVideo = () => {
-    //     navigator.mediaDevices
-    //         .getUserMedia({ video: true, audio: voice })
-    //         .then((currentStream) => {
-    //             setStream(currentStream);
-    //             myVideo.current.srcObject = currentStream;
-    //         });
-    // };
 
     const answerCall = () => {
         setCallAccepted(true);
         setIsCalling(true);
+        setOtherUser(call.from);
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })
             .then((currentStream) => {
+                console.log(currentStream);
                 setStream(currentStream);
                 myVideo.current.srcObject = currentStream;
                 const peer = new Peer({
@@ -141,20 +132,67 @@ const ContextProvider = ({ children }) => {
                 });
 
                 peer.on("signal", (data) => {
-                    socket.emit("answerCall", { signal: data, to: call.from });
+                    socket.emit("answerCall", {
+                        signal: data,
+                        to: call.from,
+                        userName: name,
+                        type: "both",
+                        myMediaStatus: [myMicStatus, myVdoStatus],
+                    });
                 });
 
                 peer.on("stream", (currentStream) => {
                     userVideo.current.srcObject = currentStream;
                 });
                 peer.signal(call.signal);
+                connectionRef.current = peer;
+            })
+            .catch((e) => {
+                const peer = new Peer({
+                    initiator: false,
+                    trickle: false,
+                    config: {
+                        iceServers: [
+                            { urls: ["stun:ss-turn2.xirsys.com"] },
+                            {
+                                username:
+                                    "GIOP-iozOi546kx6umb8j6Jz6tk5MlD9GDGuRdmrYh4tr2Cv7CuIYC_VregYftCjAAAAAGJ2qMRrb2tvcm81NTU=",
+                                credential:
+                                    "0a694714-ce29-11ec-b50b-0242ac140004",
+                                urls: [
+                                    "turn:ss-turn2.xirsys.com:80?transport=udp",
+                                    "turn:ss-turn2.xirsys.com:3478?transport=udp",
+                                    "turn:ss-turn2.xirsys.com:80?transport=tcp",
+                                    "turn:ss-turn2.xirsys.com:3478?transport=tcp",
+                                    "turns:ss-turn2.xirsys.com:443?transport=tcp",
+                                    "turns:ss-turn2.xirsys.com:5349?transport=tcp",
+                                ],
+                            },
+                        ],
+                    },
+                });
 
+                peer.on("signal", (data) => {
+                    socket.emit("answerCall", {
+                        signal: data,
+                        to: call.from,
+                        userName: name,
+                        type: "both",
+                        myMediaStatus: [myMicStatus, myVdoStatus],
+                    });
+                });
+
+                peer.on("stream", (currentStream) => {
+                    userVideo.current.srcObject = currentStream;
+                });
+                peer.signal(call.signal);
                 connectionRef.current = peer;
             });
     };
 
     const callUser = (id, name) => {
         setName(name);
+        setOtherUser(id);
         setIsCalling(true);
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })
@@ -190,29 +228,39 @@ const ContextProvider = ({ children }) => {
                         userToCall: id,
                         signalData: data,
                         from: me,
-                        name: user.displayName,
+                        name,
                     });
                 });
                 peer.on("stream", (currentStream) => {
                     userVideo.current.srcObject = currentStream;
                 });
-                socket.on("callAccepted", (signal) => {
+
+                socket.on("callAccepted", ({ signal, userName }) => {
                     setCallAccepted(true);
+                    setUserName(userName);
                     peer.signal(signal);
+                    socket.emit("updateMyMedia", {
+                        type: "both",
+                        currentMediaStatus: [myMicStatus, myVdoStatus],
+                    });
                 });
+
                 connectionRef.current = peer;
             });
     };
 
     const leaveCall = () => {
-        setIsCalling(false);
         setCallEnded(true);
-        stopVideo();
-        stopVoice();
-        if (connectionRef.current) {
-            connectionRef.current.destroy();
-            window.location.reload();
-        }
+        setIsCalling(false);
+
+        connectionRef.current.destroy();
+        socket.emit("endCall", { id: otherUser });
+        window.location.reload();
+    };
+
+    const leaveCall1 = () => {
+        setIsCalling(false);
+        socket.emit("endCall", { id: otherUser });
     };
 
     return (
@@ -230,8 +278,18 @@ const ContextProvider = ({ children }) => {
                 callUser,
                 leaveCall,
                 answerCall,
+                setOtherUser,
+                leaveCall1,
+                userName,
+                myVdoStatus,
+                setMyVdoStatus,
+                userVdoStatus,
+                setUserVdoStatus,
+                updateVideo,
+                myMicStatus,
+                userMicStatus,
+                updateMic,
                 isCalling,
-                setIsCalling,
             }}
         >
             {children}
