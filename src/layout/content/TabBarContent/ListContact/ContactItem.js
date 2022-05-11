@@ -63,10 +63,6 @@ function ContactItem(props) {
                             <i className="bi bi-three-dots-vertical"></i>
                         </Dropdown.Toggle>
                         <Dropdown.Menu align="end" className="text-muted">
-                            <Dropdown.Item className="listContact__dropdownItem">
-                                Share
-                                <i className="bi bi-share float-end text-muted"></i>
-                            </Dropdown.Item>
                             <Dropdown.Item
                                 className="listContact__dropdownItem"
                                 onClick={handleDelete}

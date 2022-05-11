@@ -28,7 +28,6 @@ function ListChatContent({ filter }) {
             <div className="listChatContent_fix_height fix_scroll">
                 {listMessageSort &&
                     listMessageSort.length > 0 &&
-                    listMessageSort.sort(sortTime) &&
                     listMessageSort.map((value, index) => (
                         <ListChatItem
                             filter={filter}

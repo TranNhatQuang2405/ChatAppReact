@@ -77,7 +77,6 @@ function ChatContent() {
 
     //Show dialog
     const handleShowConfirm = (actionType) => {
-        console.log(actionType);
         if (actionType === 1) {
             setActionConfirm({
                 handleAccept: handleLeaveGroup,
@@ -440,9 +439,6 @@ function ChatContent() {
                     </Col>
                     <Col>
                         <div className="d-flex h-100 align-items-center float-end pe-3">
-                            <div className="ChatContent__icon d-none d-lg-flex">
-                                <i className="bi bi-telephone-fill"></i>
-                            </div>
                             <div className="ChatContent__icon d-none d-lg-flex">
                                 <i
                                     className="bi bi-camera-video-fill"

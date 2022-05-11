@@ -1,16 +1,23 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { Avatar } from "components";
 import { Dropdown, Spinner } from "react-bootstrap";
-import ImageMessage from "./ImageMessage";
 import { useSelector } from "react-redux";
 import { deleteChileMessage } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import axios from "axios";
+const ShareMessage = React.lazy(() => import("./ShareMessage"));
+const ImageMessage = React.lazy(() => import("./ImageMessage"));
 
 function LeftMessage({ user, value }) {
     const keyM = useSelector((state) => state.CurrentMessage.data.key);
     const keyU = useSelector((state) => state.UserInfo.user.uid);
+    const [showShare, setShowShare] = useState(false);
+    const [currentMessage, setCurrentMessage] = useState(null);
     const handleDeleteMessage = async (keyC) => {
         await deleteChileMessage(keyM, keyC, keyU);
+    };
+    const handleShare = (message) => {
+        setCurrentMessage(message);
+        setShowShare(true);
     };
     const downloadDriect = (url, name) => {
         axios({
@@ -77,7 +84,10 @@ function LeftMessage({ user, value }) {
                                         align="start"
                                         className="text-muted messageAction__dropdown"
                                     >
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() => handleShare(tmp)}
+                                        >
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
                                         <Dropdown.Item
@@ -95,6 +105,15 @@ function LeftMessage({ user, value }) {
                     ))}
                     <div className="userName">{user.displayName}</div>
                 </div>
+                <React.Suspense
+                    fallback={<Spinner animation="border" variant="primary" />}
+                >
+                    <ShareMessage
+                        show={showShare}
+                        setShow={setShowShare}
+                        message={currentMessage}
+                    />
+                </React.Suspense>
             </div>
         );
     else if (value.type === 2) {
@@ -151,7 +170,10 @@ function LeftMessage({ user, value }) {
                                         align="start"
                                         className="text-muted messageAction__dropdown"
                                     >
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() => handleShare(tmp)}
+                                        >
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
                                         <Dropdown.Item
@@ -169,6 +191,15 @@ function LeftMessage({ user, value }) {
                     ))}
                     <div className="userName">{user.displayName}</div>
                 </div>
+                <React.Suspense
+                    fallback={<Spinner animation="border" variant="primary" />}
+                >
+                    <ShareMessage
+                        show={showShare}
+                        setShow={setShowShare}
+                        message={currentMessage}
+                    />
+                </React.Suspense>
             </div>
         );
     } else if (value.type === 3) {
@@ -226,7 +257,10 @@ function LeftMessage({ user, value }) {
                                         align="start"
                                         className="text-muted messageAction__dropdown"
                                     >
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() => handleShare(tmp)}
+                                        >
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
                                         <Dropdown.Item
@@ -239,6 +273,56 @@ function LeftMessage({ user, value }) {
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
+                            </div>
+                        </div>
+                    ))}
+                    <div className="userName">{user.displayName}</div>
+                </div>
+                <React.Suspense
+                    fallback={<Spinner animation="border" variant="primary" />}
+                >
+                    <ShareMessage
+                        show={showShare}
+                        setShow={setShowShare}
+                        message={currentMessage}
+                    />
+                </React.Suspense>
+            </div>
+        );
+    } else if (value.type === 4) {
+        return (
+            <div className="Message__Parent">
+                <div className="d-flex flex-column-reverse">
+                    <Avatar width="2rem" url={user.photoURL} />
+                </div>
+                <div className="Message__Content-Left">
+                    {value.val.map((tmp) => (
+                        <div className="nodeChildMessage" key={tmp.key}>
+                            <div className="childMessage nobackground messageFile">
+                                <span>{tmp.val.title}</span>
+                                <div className="d-flex">
+                                    <div className="childMessage-hour">
+                                        {new Date(
+                                            tmp.val.createAt
+                                        ).getDate() === new Date().getDate()
+                                            ? new Date(
+                                                  tmp.val.createAt
+                                              ).toLocaleTimeString("en-US", {
+                                                  hour12: true,
+                                                  hour: "numeric",
+                                                  minute: "numeric",
+                                              })
+                                            : new Date(
+                                                  tmp.val.createAt
+                                              ).toLocaleTimeString("en-US", {
+                                                  hour12: true,
+                                                  day: "numeric",
+                                                  month: "short",
+                                                  hour: "numeric",
+                                                  minute: "numeric",
+                                              })}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     ))}

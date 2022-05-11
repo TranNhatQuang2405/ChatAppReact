@@ -17,7 +17,6 @@ function ListMessage(props) {
     const [numNewMessage, setNumNewMessage] = useState(null);
     const [play] = useSound(MessageSound);
     const sound = useSelector((state) => state.Sound.sound);
-
     useEffect(() => {
         if (listWaitSend && listWaitSend.length > 0) {
             var ctype = listWaitSend[0].type;
@@ -55,6 +54,11 @@ function ListMessage(props) {
 
         return () => {};
     }, [listWaitSend]);
+
+    useEffect(() => {
+        setNumNewMessage(null);
+        return () => {};
+    }, [keyId]);
 
     useEffect(() => {
         var tmpCountNew = 0;
@@ -107,10 +111,14 @@ function ListMessage(props) {
             numNewMessage < tmpCountNew &&
             sound &&
             isActive
-        )
+        ) {
             play();
+        }
         setNumNewMessage(tmpCountNew);
-        return () => {};
+        return () => {
+            setNumNewMessage(null);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listChild]);
 
     return (

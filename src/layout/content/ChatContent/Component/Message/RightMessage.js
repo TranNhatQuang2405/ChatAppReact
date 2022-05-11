@@ -1,15 +1,22 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import { Avatar } from "components";
 import { Dropdown, Spinner } from "react-bootstrap";
 import { deleteChileMessage } from "configs/firebase/ServiceFirebase/ServiceDelete";
 import { useSelector } from "react-redux";
 import axios from "axios";
 const ImageMessage = React.lazy(() => import("./ImageMessage"));
+const ShareMessage = React.lazy(() => import("./ShareMessage"));
 
 function RightMessage({ user, value }) {
     const keyM = useSelector((state) => state.CurrentMessage.data.key);
     const keyU = useSelector((state) => state.UserInfo.user.uid);
+    const [showShare, setShowShare] = useState(false);
+    const [currentMessage, setCurrentMessage] = useState(null);
 
+    const handleShare = (message) => {
+        setCurrentMessage(message);
+        setShowShare(true);
+    };
     const downloadDriect = (url, name) => {
         axios({
             url: url,
@@ -82,7 +89,10 @@ function RightMessage({ user, value }) {
                                         align="end"
                                         className="text-muted messageAction__dropdown"
                                     >
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() => handleShare(tmp)}
+                                        >
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
                                         <Dropdown.Item
@@ -100,6 +110,15 @@ function RightMessage({ user, value }) {
                     ))}
                     <div className="userName">{user.displayName}</div>
                 </div>
+                <React.Suspense
+                    fallback={<Spinner animation="border" variant="primary" />}
+                >
+                    <ShareMessage
+                        show={showShare}
+                        setShow={setShowShare}
+                        message={currentMessage}
+                    />
+                </React.Suspense>
             </div>
         );
     else if (value.type === 2)
@@ -167,7 +186,10 @@ function RightMessage({ user, value }) {
                                         align="start"
                                         className="text-muted messageAction__dropdown"
                                     >
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() => handleShare(tmp)}
+                                        >
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
                                         <Dropdown.Item
@@ -185,6 +207,15 @@ function RightMessage({ user, value }) {
                     ))}
                     <div className="userName">{user.displayName}</div>
                 </div>
+                <React.Suspense
+                    fallback={<Spinner animation="border" variant="primary" />}
+                >
+                    <ShareMessage
+                        show={showShare}
+                        setShow={setShowShare}
+                        message={currentMessage}
+                    />
+                </React.Suspense>
             </div>
         );
     else if (value.type === 3)
@@ -251,7 +282,10 @@ function RightMessage({ user, value }) {
                                         align="end"
                                         className="text-muted messageAction__dropdown"
                                     >
-                                        <Dropdown.Item className="messageAction__dropdown-item">
+                                        <Dropdown.Item
+                                            className="messageAction__dropdown-item"
+                                            onClick={() => handleShare(tmp)}
+                                        >
                                             <i className="bi bi-share"></i>
                                         </Dropdown.Item>
                                         <Dropdown.Item
@@ -269,6 +303,15 @@ function RightMessage({ user, value }) {
                     ))}
                     <div className="userName">{user.displayName}</div>
                 </div>
+                <React.Suspense
+                    fallback={<Spinner animation="border" variant="primary" />}
+                >
+                    <ShareMessage
+                        show={showShare}
+                        setShow={setShowShare}
+                        message={currentMessage}
+                    />
+                </React.Suspense>
             </div>
         );
     else if (value.type === 4) {
