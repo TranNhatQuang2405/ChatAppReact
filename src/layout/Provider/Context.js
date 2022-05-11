@@ -252,7 +252,18 @@ const ContextProvider = ({ children }) => {
     const leaveCall = () => {
         setCallEnded(true);
         setIsCalling(false);
-
+        setStream((stream) => {
+            if (stream) {
+                var tmpStream = stream;
+                tmpStream.getAudioTracks().forEach(function (track) {
+                    track.stop();
+                });
+                tmpStream.getVideoTracks().forEach(function (track) {
+                    track.stop();
+                });
+                return tmpStream;
+            } else return null;
+        });
         connectionRef.current.destroy();
         socket.emit("endCall", { id: otherUser });
         window.location.reload();
