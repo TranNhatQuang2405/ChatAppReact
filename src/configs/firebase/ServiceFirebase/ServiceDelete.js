@@ -1,5 +1,7 @@
 import { deleteRecord, findAllChildOfRecord, findExactRecord } from "./service";
 import { findMessageByKey } from "./ServiceFind";
+import { findMessageByKey, findUserByUid } from "./ServiceFind";
+import { addChildMessage } from "./ServiceInsert";
 import { db } from "../config";
 import { ref, update } from "firebase/database";
 
@@ -58,6 +60,16 @@ export const leaveGroup = async (keyId, keyMessage, uid) => {
             ...value.val,
             listUser: [...list],
         });
+        const user = await findUserByUid(uid);
+        console.log(user);
+        await addChildMessage(
+            keyMessage,
+            5,
+            uid,
+            `${user.displayName} left this group`,
+            "",
+            ""
+        );
     }
 };
 

@@ -5,7 +5,11 @@ import {
     updateSpecialChildRecord,
 } from "./service";
 import { update, ref, set } from "firebase/database";
-import { findMessageByKey, findUserKeyByUid } from "./ServiceFind";
+import {
+    findMessageByKey,
+    findUserByUid,
+    findUserKeyByUid,
+} from "./ServiceFind";
 import { db } from "../config";
 
 export const addUser = async (user,) => {
@@ -120,6 +124,17 @@ export const AddMember = async (keyF, keyM, uidF) => {
             ...value.val,
             listUser: [...value.val.listUser, uidF],
         });
+        const user = await findUserByUid(uidF);
+        console.log(user);
+
+        await addChildMessage(
+            keyM,
+            5,
+            uidF,
+            `${user.displayName} is added to group`,
+            "",
+            ""
+        );
     }
 };
 

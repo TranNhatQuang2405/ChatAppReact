@@ -3,7 +3,7 @@ import { ref, onValue } from "firebase/database";
 import { db } from "configs/firebase/config";
 import { findExactRecord } from "configs/firebase/ServiceFirebase/service";
 
-const useSound = (keyU, keyM) => {
+const useSoundMessage = (keyU, keyM) => {
     const [isActive, setIsActive] = React.useState(false);
     const [keyCM, setKeyCM] = React.useState("");
 
@@ -35,7 +35,13 @@ const useSound = (keyU, keyM) => {
         const unsubscribe = onValue(
             dbRef,
             (snapshot) => {
-                setIsActive(snapshot.val() || false);
+                setIsActive(
+                    snapshot.val() === null ||
+                        snapshot.val() === undefined ||
+                        snapshot.val() === true
+                        ? true
+                        : false
+                );
             },
             {
                 onlyOnce: false,
@@ -46,4 +52,4 @@ const useSound = (keyU, keyM) => {
     return [isActive];
 };
 
-export default useSound;
+export default useSoundMessage;

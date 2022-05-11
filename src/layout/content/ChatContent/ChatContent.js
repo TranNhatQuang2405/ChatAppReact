@@ -44,6 +44,7 @@ import { add, remove } from "configs/redux/Slice/SendingSlice";
 import AddMember from "./Component/AddMember/AddMember";
 import { findAllChildOfRecord } from "configs/firebase/ServiceFirebase/service";
 import { SocketContext } from "layout/Provider/Context";
+import useSoundMessage from "configs/customHook/useSoundMessage";
 
 function ChatContent() {
     const show = useSelector((state) => state.ShowMessage.value);
@@ -56,6 +57,10 @@ function ChatContent() {
     const [actionConfirm, setActionConfirm] = useState({});
     const dispatch = useDispatch();
     const { callUser } = useContext(SocketContext);
+    const [isActive] = useSoundMessage(
+        currentUser.key,
+        MessageData && MessageData.key
+    );
     const [Message, setMessage] = useState({
         message: "",
         file: [],
@@ -482,8 +487,17 @@ function ChatContent() {
                                             className="listContact__dropdownItem ChatContent__dropdownLink"
                                             onClick={handleChangeStatus}
                                         >
-                                            Muted
-                                            <i className="bi bi-bell-slash float-end"></i>
+                                            {isActive ? (
+                                                <>
+                                                    Muted
+                                                    <i className="bi bi-bell-slash float-end"></i>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Active Sound
+                                                    <i className="bi bi-bell-fill float-end"></i>
+                                                </>
+                                            )}
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                             className="listContact__dropdownItem ChatContent__dropdownLink"
@@ -503,6 +517,7 @@ function ChatContent() {
                         keyId={MessageData.key}
                         uid={currentUser.uid}
                         createAt={MessageData.createAt}
+                        isActive={isActive}
                     />
                 </Row>
                 <Row className="top_border p-2 p-lg-3 chatContent__input-parent">
@@ -649,8 +664,17 @@ function ChatContent() {
                                             className="listContact__dropdownItem ChatContent__dropdownLink"
                                             onClick={handleChangeStatus}
                                         >
-                                            Muted
-                                            <i className="bi bi-bell-slash float-end"></i>
+                                            {isActive ? (
+                                                <>
+                                                    Muted
+                                                    <i className="bi bi-bell-slash float-end"></i>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Active Sound
+                                                    <i className="bi bi-bell-fill float-end"></i>
+                                                </>
+                                            )}
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                             className="listContact__dropdownItem ChatContent__dropdownLink"
@@ -679,6 +703,7 @@ function ChatContent() {
                         keyId={MessageData.key}
                         uid={currentUser.uid}
                         createAt={MessageData.createAt}
+                        isActive={isActive}
                     />
                 </Row>
                 <Row className="top_border p-2 p-lg-3 chatContent__input-parent">

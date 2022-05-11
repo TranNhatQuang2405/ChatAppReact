@@ -8,7 +8,7 @@ import useSound from "use-sound";
 import MessageSound from "sound/message.mp3";
 
 function ListMessage(props) {
-    const { keyId, uid, createAt } = props;
+    const { keyId, uid, createAt, isActive } = props;
     const [listChild] = useListChildMessage(keyId, uid, createAt);
     const [list, setList] = useState([]);
     const listWaitSend = useSelector((state) => state.Sending.data[keyId]);
@@ -105,7 +105,8 @@ function ListMessage(props) {
             tmpCountNew &&
             numNewMessage &&
             numNewMessage < tmpCountNew &&
-            sound
+            sound &&
+            isActive
         )
             play();
         setNumNewMessage(tmpCountNew);

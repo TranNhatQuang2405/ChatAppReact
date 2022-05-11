@@ -312,6 +312,22 @@ function RightMessage({ user, value }) {
                 </div>
             </div>
         );
+    } else {
+        return (
+            <div className="Message__Parent flex-row-reverse">
+                <div className="Message__Content-Right fix-width">
+                    {value.val.map((tmp) => (
+                        <div className="nodeChildMessage-Right" key={tmp.key}>
+                            <div className="childMessage__line"></div>
+                            <div className="childMessage message__group-add-leave">
+                                <span>{tmp.val.title}</span>
+                            </div>
+                            <div className="childMessage__line line"></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
     }
 }
 

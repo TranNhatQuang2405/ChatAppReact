@@ -246,41 +246,19 @@ function LeftMessage({ user, value }) {
                 </div>
             </div>
         );
-    } else if (value.type === 4) {
+    } else {
         return (
             <div className="Message__Parent">
-                <div className="d-flex flex-column-reverse">
-                    <Avatar width="2rem" url={user.photoURL} />
-                </div>
-                <div className="Message__Content-Left">
+                <div className="Message__Content-Left fix-width">
                     {value.val.map((tmp) => (
                         <div className="nodeChildMessage" key={tmp.key}>
-                            <div className="childMessage nobackground messageFile">
+                            <div className="childMessage__line"></div>
+                            <div className="childMessage message__group-add-leave">
                                 <span>{tmp.val.title}</span>
-                                <div className="childMessage-hour">
-                                    {new Date(tmp.val.createAt).getDate() ===
-                                    new Date().getDate()
-                                        ? new Date(
-                                              tmp.val.createAt
-                                          ).toLocaleTimeString("en-US", {
-                                              hour12: true,
-                                              hour: "numeric",
-                                              minute: "numeric",
-                                          })
-                                        : new Date(
-                                              tmp.val.createAt
-                                          ).toLocaleTimeString("en-US", {
-                                              hour12: true,
-                                              day: "numeric",
-                                              month: "short",
-                                              hour: "numeric",
-                                              minute: "numeric",
-                                          })}
-                                </div>
                             </div>
+                            <div className="childMessage__line line"></div>
                         </div>
                     ))}
-                    <div className="userName">{user.displayName}</div>
                 </div>
             </div>
         );

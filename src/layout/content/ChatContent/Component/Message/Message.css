@@ -214,3 +214,28 @@
     background-color: var(--bs-gray-700);
     color: var(--bs-gray-100);
 }
+
+.childMessage__line {
+    height: 1px;
+    flex-grow: 1;
+    border-top: 1px solid;
+    align-self: center;
+    color: var(--bs-gray-300);
+}
+.childMessage__line.line-right {
+    height: 1px;
+    flex-grow: 1;
+}
+.message__group-add-leave {
+    background-color: var(--bs-gray-100) !important;
+    padding: 0px 5px !important;
+    font-size: 12px !important;
+    color: var(--bs-gray-600) !important;
+}
+
+.Message__Content-Left.fix-width {
+    max-width: 100% !important;
+}
+.Message__Content-Right.fix-width {
+    max-width: 100% !important;
+}
